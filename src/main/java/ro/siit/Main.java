@@ -29,7 +29,7 @@ public class Main extends HttpServlet {
             newDate = simpleDateFormat.format(date);
             resp.setContentType("application/json");
             resp.getWriter().println("Your date of birth is " + newDate); //just a test line to make sure simpleDateFormat works
-            resp.getWriter().println("Total number of days lived on planet Earth until today: " + MapAge.calculateAgeInDays(date));
+            resp.getWriter().println("Total days lived on planet Earth until today: " + MapAge.calculateAgeInDays(date));
         } catch (ParseException e) {
             e.printStackTrace();
         }
