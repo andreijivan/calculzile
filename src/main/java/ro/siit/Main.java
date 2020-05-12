@@ -19,7 +19,7 @@ public class Main extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/jsps/enterAge.jsp").forward(req,resp);
+        req.getRequestDispatcher("/jsps/EnterAge.jsp").forward(req,resp);
 
     }
 
