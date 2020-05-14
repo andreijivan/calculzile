@@ -1,4 +1,4 @@
-package ro.siit;
+package ro.siit.OrderProcessing;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

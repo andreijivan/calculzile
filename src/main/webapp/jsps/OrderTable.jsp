@@ -35,6 +35,17 @@
             <td><c:out value="${user.name}" /></td>
             <td><c:out value="${user.email}" /></td>
             <td><c:out value="${user.profession}" /></td>
+            <td><c:out value="${user.id}" /></td>
+            <td><c:out value="${user.name}" /></td>
+            <td><c:out value="${user.email}" /></td>
+            <td><c:out value="${user.profession}" /></td>
+            <td><c:out value="${user.id}" /></td>
+            <td><c:out value="${user.name}" /></td>
+            <td><c:out value="${user.email}" /></td>
+            <td><c:out value="${user.profession}" /></td>
+            <td><c:out value="${user.name}" /></td>
+            <td><c:out value="${user.email}" /></td>
+            <td><c:out value="${user.profession}" /></td>
         </tr>
     </c:forEach>
     </thead>

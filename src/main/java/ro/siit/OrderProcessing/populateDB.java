@@ -1,4 +1,4 @@
-package ro.siit;
+package ro.siit.OrderProcessing;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.siit.OrderDetails.Order;
@@ -18,22 +18,13 @@ import java.util.stream.Collectors;
 @WebServlet(urlPatterns = {"/populateDB"})
 public class populateDB extends HttpServlet {
 
-   // List<Order> orderList = new ArrayList<>();
-
        @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-
-         /*  for (Order order : orderList) {
-               resp.getWriter().println(order);
-               resp.getWriter().println();
-           }*/
 
        }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-     //   resp.setContentType("application/json");
-      //  resp.getWriter().println("**** before text post ****");
 
         if ("POST".equalsIgnoreCase(req.getMethod()))
         {
@@ -43,14 +34,20 @@ public class populateDB extends HttpServlet {
             Matcher matchStart = start.matcher(test);
             Matcher matchEnd = end.matcher(test);
             String itemsList = test.substring(matchStart.start(),matchEnd.start());*/
-            //resp.getWriter().println(test);
 
             //jackson object conversion
             ObjectMapper objectMapper = new ObjectMapper();
             Order order = objectMapper.readValue(test,Order.class);
            // orderList.add(order);
 
+
             String Status = "";
+            if (order.getPayment_method_title().equals("Plata cu cardul")){
+                Status = "Achitat online. De expediat. *Create AWB*";
+            }
+            else if (order.getPayment_method_title().equals("Plata ramburs la curier")){
+                Status = "Plata ramburs. Ridicare personala shop/Livrare GLS - Create AWB";
+            }
             int Nr = order.getId();
             int codComanda =order.getId();
             String Data = order.getDate_created();
@@ -62,9 +59,9 @@ public class populateDB extends HttpServlet {
             String Tara = order.getBilling().getCountry();
             String nrTelefon = order.getBilling().getPhone();
             String email = order.getBilling().getEmail();
-            String Observatii = "";
-            int valoareProduse = order.getTotal();
-            String incasat = "";
+            String Observatii = ""; //implement open field to save text
+            int valoareProduse = order.getTotal()-order.getShipping_total();
+            String incasat = order.getPayment_method_title();
 
             try{
                 Class.forName("org.postgresql.Driver");

@@ -1,4 +1,4 @@
-package ro.siit;
+package ro.siit.Misc;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
