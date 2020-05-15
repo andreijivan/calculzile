@@ -1,4 +1,7 @@
 package ro.siit.OrderDetails;
+
+import java.util.ArrayList;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,9 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Item {
-    private int id;
-    private String name;
-    private int quantity;
-    private int total;
+public class LineItems {
+   private String name;
+   private int quantity;
+   private int total;
+
 }

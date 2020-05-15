@@ -16,11 +16,10 @@ public class Order {
     private int total;
     private int shipping_total;
     private String payment_method_title;
-    private Products products;
+    private LineItems [] line_items;
+    private ShippingLine [] shipping_lines;
+    private String customer_note;
 
-    /*@Override
-    public String toString() {
-        return "Order " + billing.getFirst_name() + " " + billing.getLast_name() + " id " + id;
-    }*/
+
 }
 

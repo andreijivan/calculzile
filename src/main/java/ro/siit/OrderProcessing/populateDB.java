@@ -38,30 +38,45 @@ public class populateDB extends HttpServlet {
             //jackson object conversion
             ObjectMapper objectMapper = new ObjectMapper();
             Order order = objectMapper.readValue(test,Order.class);
-           // orderList.add(order);
 
 
-            String Status = "";
-            if (order.getPayment_method_title().equals("Plata cu cardul")){
-                Status = "Achitat online. De expediat. *Create AWB*";
-            }
-            else if (order.getPayment_method_title().equals("Plata ramburs la curier")){
-                Status = "Plata ramburs. Ridicare personala shop/Livrare GLS - Create AWB";
-            }
             int Nr = order.getId();
             int codComanda =order.getId();
             String Data = order.getDate_created();
             String Client = order.getBilling().getFirst_name() + " " + order.getBilling().getLast_name();
             String Produse = "";
+
+            for (int i = 0; i <order.getLine_items().length ; i++) {
+                Produse+= order.getLine_items()[i].getQuantity() + " x " + order.getLine_items()[i].getName() + "(" + order.getLine_items()[i].getTotal() + " lei)" + "|| ";
+            }
+
             String Adresa = order.getBilling().getAddress_1() + " " + order.getBilling().getAddress_2();
             String Localitate = order.getBilling().getCity() + " " + order.getBilling().getState();
             String codPostal = order.getBilling().getPostcode();
             String Tara = order.getBilling().getCountry();
             String nrTelefon = order.getBilling().getPhone();
             String email = order.getBilling().getEmail();
-            String Observatii = ""; //implement open field to save text
+            String Observatii = order.getCustomer_note(); //implement open field to save text
             int valoareProduse = order.getTotal()-order.getShipping_total();
+            String Status = "";
             String incasat = order.getPayment_method_title();
+
+            if (order.getPayment_method_title().equals("Plata cu cardul / Card payment") || order.getPayment_method_title().equals("Plata cu cardul") ){
+                Status = "Achitat online CARD. De expediat. *Create AWB*";
+                incasat = String.valueOf(valoareProduse);
+            }
+            else if (order.getPayment_method_title().equals("Transfer bancar (ordin de plată) / Direct bank transfer")){
+                Status = "Achitat online TRANSFER BANCAR. De asteptat confirmare banca. De expediat. *Create AWB*";
+            }
+
+             if (order.getPayment_method_title().equals("Plata numerar")){
+                 if (order.getShipping_lines()[0].getMethod_title().equals("Transport prin curier rapid")){
+                Status = "Plata ramburs. Livrare curier  *Create AWB*";
+            }
+                 else if (order.getShipping_lines()[0].getMethod_title().equals("Ridicare personală de la depozitul magazinului (fără cost de transport)")){
+                     Status = "Plata ramburs. Ridicare personala din magazin.";
+             }
+        }
 
             try{
                 Class.forName("org.postgresql.Driver");

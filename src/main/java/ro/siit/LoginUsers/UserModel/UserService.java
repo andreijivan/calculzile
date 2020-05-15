@@ -6,10 +6,11 @@ import java.util.UUID;
 
 public class UserService {
     private Connection connection;
+
     public UserService(){
         try{
             Class.forName("org.postgresql.Driver");
-            Connection connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+             connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }

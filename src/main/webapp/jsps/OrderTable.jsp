@@ -1,13 +1,16 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page isELIgnored="false" %>
 <html lang="en">
 <head>
+    <link rel="icon" href="https://www.sspolitehnica.ro/wp-content/uploads/2017/07/pt-2-32x32.png" sizes="32x32">
     <style>
         table, th, td {
             border: 1px solid black;
         }
     </style>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <title>OrderTable</title>
+    <title>Poli Orders</title>
 </head>
 <body>
 <table class="table table-hover">
@@ -29,23 +32,23 @@
         <th scope="col">Valoare produse</th>
         <th scope="col">Incasat</th>
     </tr>
-    <c:forEach var="user" items="${poliorders.rows}">
+    <c:forEach var="order" items="${orders}">
         <tr>
-            <td><c:out value="${user.id}" /></td>
-            <td><c:out value="${user.name}" /></td>
-            <td><c:out value="${user.email}" /></td>
-            <td><c:out value="${user.profession}" /></td>
-            <td><c:out value="${user.id}" /></td>
-            <td><c:out value="${user.name}" /></td>
-            <td><c:out value="${user.email}" /></td>
-            <td><c:out value="${user.profession}" /></td>
-            <td><c:out value="${user.id}" /></td>
-            <td><c:out value="${user.name}" /></td>
-            <td><c:out value="${user.email}" /></td>
-            <td><c:out value="${user.profession}" /></td>
-            <td><c:out value="${user.name}" /></td>
-            <td><c:out value="${user.email}" /></td>
-            <td><c:out value="${user.profession}" /></td>
+            <td><c:out value="${order.status}" /></td>
+            <td><c:out value="${order.nr}" /></td>
+            <td><c:out value="${order.codComanda}" /></td>
+            <td><c:out value="${order.dataComanda}" /></td>
+            <td><c:out value="${order.client}" /></td>
+            <td><c:out value="${order.produse}" /></td>
+            <td><c:out value="${order.adresa}" /></td>
+            <td><c:out value="${order.localitate}" /></td>
+            <td><c:out value="${order.codPostal}" /></td>
+            <td><c:out value="${order.tara}" /></td>
+            <td><c:out value="${order.telefon}" /></td>
+            <td><c:out value="${order.email}" /></td>
+            <td><c:out value="${order.observatii}" /></td>
+            <td><c:out value="${order.valoareProduse}" /></td>
+            <td><c:out value="${order.incasat}" /></td>
         </tr>
     </c:forEach>
     </thead>

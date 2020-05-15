@@ -24,7 +24,7 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setAttribute("display", "none");
-        req.getRequestDispatcher("/jsps/LoginForm.jsp").forward(req,resp);
+        req.getRequestDispatcher("/jsps/loginForm.jsp").forward(req,resp);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class LoginServlet extends HttpServlet {
         else{
             req.setAttribute("error", "Username/Password combination incorrect.");
             req.setAttribute("display", "block");
-            req.getRequestDispatcher("/jsps/LoginForm.jsp").forward(req,resp);
+            req.getRequestDispatcher("/jsps/loginForm.jsp").forward(req,resp);
         }
 
 

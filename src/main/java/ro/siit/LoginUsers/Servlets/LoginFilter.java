@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/entity"})
+@WebFilter(urlPatterns = {"/poliOrders"})
 public class LoginFilter implements Filter {
     public void init(FilterConfig arg0) {}
     @Override
