@@ -19,14 +19,9 @@ public class PoliOrdersTable extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        List<DisplayedOrder> orders = orderService.getOrders();
-        req.setAttribute("orders",orders);
+        List<DisplayedOrder> totalOrders = orderService.getAllOrders();
+        req.setAttribute("orders",totalOrders);
         req.getRequestDispatcher("/jsps/OrderTable.jsp").forward(req,resp);
-
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
 
     }
 

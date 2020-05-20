@@ -1,0 +1,34 @@
+th {
+    border: 2px solid black;
+}
+table, td {
+    border: 1px solid black;
+}
+.btn {
+    color: rebeccapurple;
+    border-color: rebeccapurple;
+}
+.btn:hover {
+    color: white;
+    border-color: rebeccapurple;
+    background-color: rebeccapurple;
+}
+.btn:focus {
+    color: white;
+    border-color: rebeccapurple;
+    background: rebeccapurple;
+}
+.dropdown-item {
+    color: rebeccapurple;
+    border-color: rebeccapurple;
+}
+.dropdown-item:hover{
+    color: white;
+    border-color: rebeccapurple;
+    background-color: rebeccapurple;
+}
+.dropdown-item:focus{
+    color: white;
+    border-color: rebeccapurple;
+    background: rebeccapurple;
+}
