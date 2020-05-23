@@ -9,11 +9,9 @@ import java.io.IOException;
 @WebServlet(urlPatterns = {"/logout"})
 public class LogoutServlet extends HttpServlet {
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        if(req.getParameter("logoutButton") != null){
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
             req.getSession().removeAttribute("authenticated");
             resp.sendRedirect(req.getContextPath() + "/login");
-        }
 
     }
 }

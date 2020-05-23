@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.util.List;
 
 
-@WebServlet(urlPatterns = {"/poliOrders"})
-public class PoliOrdersTable extends HttpServlet {
+@WebServlet(urlPatterns = {"/showAllOrders"})
+public class ShowAllOrders extends HttpServlet {
 
     private OrderService orderService = new OrderService();
 
@@ -21,8 +21,13 @@ public class PoliOrdersTable extends HttpServlet {
 
         List<DisplayedOrder> totalOrders = orderService.getAllOrders();
         req.setAttribute("orders",totalOrders);
-        req.getRequestDispatcher("/jsps/OrderTable.jsp").forward(req,resp);
+        req.getRequestDispatcher("/jsps/table.jsp").forward(req,resp);
 
     }
 
-}
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        }
+    }
+

@@ -29,13 +29,7 @@ public class populateDB extends HttpServlet {
         if ("POST".equalsIgnoreCase(req.getMethod()))
         {
             String test = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-          /*  Pattern start = Pattern.compile("line_items");
-            Pattern end = Pattern.compile("tax_lines");
-            Matcher matchStart = start.matcher(test);
-            Matcher matchEnd = end.matcher(test);
-            String itemsList = test.substring(matchStart.start(),matchEnd.start());*/
 
-            //jackson object conversion
             ObjectMapper objectMapper = new ObjectMapper();
             Order order = objectMapper.readValue(test,Order.class);
 
@@ -44,10 +38,10 @@ public class populateDB extends HttpServlet {
             int codComanda =order.getId();
             String Data = order.getDate_created();
             String Client = order.getBilling().getFirst_name() + " " + order.getBilling().getLast_name();
-            String Produse = "";
+            StringBuilder Produse = new StringBuilder();
 
             for (int i = 0; i <order.getLine_items().length ; i++) {
-                Produse+= order.getLine_items()[i].getQuantity() + " x " + order.getLine_items()[i].getName() + "(" + order.getLine_items()[i].getTotal() + " lei)" + "|| ";
+                Produse.append(order.getLine_items()[i].getQuantity()).append(" x ").append(order.getLine_items()[i].getName()).append("(").append(order.getLine_items()[i].getTotal()).append(" lei)").append("|| ");
             }
 
             String Adresa = order.getBilling().getAddress_1() + " " + order.getBilling().getAddress_2();
@@ -88,7 +82,7 @@ public class populateDB extends HttpServlet {
                 ps.setInt(3, codComanda);
                 ps.setString(4,Data);
                 ps.setString(5,Client);
-                ps.setString(6,Produse);
+                ps.setString(6, Produse.toString());
                 ps.setString(7,Adresa);
                 ps.setString(8,Localitate);
                 ps.setString(9,codPostal);
@@ -105,13 +99,5 @@ public class populateDB extends HttpServlet {
                 e.printStackTrace();
             }
         }
-
-
     }
-
-   /* private static Connection getConnection() throws SQLException {
-        String dbUrl = System.getenv("JDBC_DATABASE_URL");
-        return DriverManager.getConnection(dbUrl);
-    }*/
-
 }

@@ -34,7 +34,7 @@ public class LoginServlet extends HttpServlet {
         User authenticatedUser = userService.checkCredentials(username,pwd);
         if (authenticatedUser !=null){
             req.getSession().setAttribute("authenticatedUser",authenticatedUser);
-            resp.sendRedirect(req.getContextPath() + "/poliOrders");
+            resp.sendRedirect(req.getContextPath() + "/home");
         }
         else{
             req.setAttribute("error", "Username/Password combination incorrect.");

@@ -1,7 +1,7 @@
 th {
-    border: 2px solid black;
+    box-shadow: inset 2px -2px #000;
 }
-table, td {
+td{
     border: 1px solid black;
 }
 .btn {
