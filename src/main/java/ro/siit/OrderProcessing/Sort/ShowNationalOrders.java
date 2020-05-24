@@ -1,6 +1,7 @@
-package ro.siit.OrderProcessing;
+package ro.siit.OrderProcessing.Sort;
 
 import ro.siit.OrderDetails.DisplayedOrder;
+import ro.siit.OrderProcessing.OrderService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,19 +11,20 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(urlPatterns = {"/eliminateVirtualOrders"})
-public class EliminateVirtualOrders extends HttpServlet {
-
-    private OrderService orderService = new OrderService();
+@WebServlet(urlPatterns = {"/showNationalOrders"})
+public class ShowNationalOrders extends HttpServlet {
+    private final OrderService orderService = new OrderService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        System.out.println("A mers endpoint-ul");
-        List<DisplayedOrder> orderWithoutVirtual = orderService.noVirtualOrders();
-        System.out.println("Orders size " + orderWithoutVirtual.size());
-        req.setAttribute("orders",orderWithoutVirtual);
+        List<DisplayedOrder> totalOrders = orderService.displayNationalOrders();
+        req.setAttribute("orders",totalOrders);
         req.getRequestDispatcher("/jsps/table.jsp").forward(req,resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp){
 
     }
 }

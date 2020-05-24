@@ -2,7 +2,6 @@ package ro.siit.OrderProcessing;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.siit.OrderDetails.Order;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,15 +16,12 @@ import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = {"/populateDB"})
 public class populateDB extends HttpServlet {
-
        @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-
        }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
         if ("POST".equalsIgnoreCase(req.getMethod()))
         {
             String test = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
@@ -33,24 +29,21 @@ public class populateDB extends HttpServlet {
             ObjectMapper objectMapper = new ObjectMapper();
             Order order = objectMapper.readValue(test,Order.class);
 
-
             int Nr = order.getId();
             int codComanda =order.getId();
             String Data = order.getDate_created();
             String Client = order.getBilling().getFirst_name() + " " + order.getBilling().getLast_name();
-            StringBuilder Produse = new StringBuilder();
-
+            String Produse = "";
             for (int i = 0; i <order.getLine_items().length ; i++) {
-                Produse.append(order.getLine_items()[i].getQuantity()).append(" x ").append(order.getLine_items()[i].getName()).append("(").append(order.getLine_items()[i].getTotal()).append(" lei)").append("|| ");
+                Produse+= (order.getLine_items()[i].getQuantity()) +" x " + (order.getLine_items()[i].getName()) + "(" + (order.getLine_items()[i].getTotal()) + " lei)" + "|| ";
             }
-
             String Adresa = order.getBilling().getAddress_1() + " " + order.getBilling().getAddress_2();
             String Localitate = order.getBilling().getCity() + " " + order.getBilling().getState();
             String codPostal = order.getBilling().getPostcode();
             String Tara = order.getBilling().getCountry();
             String nrTelefon = order.getBilling().getPhone();
             String email = order.getBilling().getEmail();
-            String Observatii = order.getCustomer_note(); //implement open field to save text
+            String Observatii = order.getCustomer_note();
             int valoareProduse = order.getTotal()-order.getShipping_total();
             String Status = "";
             String incasat = order.getPayment_method_title();
@@ -73,28 +66,51 @@ public class populateDB extends HttpServlet {
         }
 
             try{
+                //if produse contains bilete virtuale go to tabel bilete virtuale and poliorders, else go to comenzinefinalizate and poliorders
                 Class.forName("org.postgresql.Driver");
                 Connection connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
-                PreparedStatement ps = connection.prepareStatement
-                        ("INSERT INTO poliorders (status, nr, cod_comanda, data_comanda, client, produse, adresa, localitate,cod_postal, tara, telefon, email, observatii, valoare_produse, incasat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                ps.setString(1, Status);
-                ps.setInt(2, Nr);
-                ps.setInt(3, codComanda);
-                ps.setString(4,Data);
-                ps.setString(5,Client);
-                ps.setString(6, Produse.toString());
-                ps.setString(7,Adresa);
-                ps.setString(8,Localitate);
-                ps.setString(9,codPostal);
-                ps.setString(10,Tara);
-                ps.setString(11,nrTelefon);
-                ps.setString(12,email);
-                ps.setString(13,Observatii);
-                ps.setInt(14,valoareProduse);
-                ps.setString(15,incasat);
+                if((Produse.contains("Bilet virtual") && Produse.length()<90) || (Produse.contains("Cutia virtual") && Produse.length()<90)){
+                    PreparedStatement ps = connection.prepareStatement
+                            ("INSERT INTO comenzivirtuale (status, nr, cod_comanda, data_comanda, client, produse, adresa, localitate,cod_postal, tara, telefon, email, observatii, valoare_produse, incasat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    ps.setString(1, Status);
+                    ps.setInt(2, Nr);
+                    ps.setInt(3, codComanda);
+                    ps.setString(4,Data);
+                    ps.setString(5,Client);
+                    ps.setString(6, Produse);
+                    ps.setString(7,Adresa);
+                    ps.setString(8,Localitate);
+                    ps.setString(9,codPostal);
+                    ps.setString(10,Tara);
+                    ps.setString(11,nrTelefon);
+                    ps.setString(12,email);
+                    ps.setString(13,Observatii);
+                    ps.setInt(14,valoareProduse);
+                    ps.setString(15,incasat);
 
-                ps.executeUpdate();
+                    ps.executeUpdate();
+                }
+                else{
+                    PreparedStatement ps = connection.prepareStatement
+                            ("INSERT INTO poliorders (status, nr, cod_comanda, data_comanda, client, produse, adresa, localitate,cod_postal, tara, telefon, email, observatii, valoare_produse, incasat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    ps.setString(1, Status);
+                    ps.setInt(2, Nr);
+                    ps.setInt(3, codComanda);
+                    ps.setString(4,Data);
+                    ps.setString(5,Client);
+                    ps.setString(6, Produse);
+                    ps.setString(7,Adresa);
+                    ps.setString(8,Localitate);
+                    ps.setString(9,codPostal);
+                    ps.setString(10,Tara);
+                    ps.setString(11,nrTelefon);
+                    ps.setString(12,email);
+                    ps.setString(13,Observatii);
+                    ps.setInt(14,valoareProduse);
+                    ps.setString(15,incasat);
 
+                    ps.executeUpdate();
+                }
             } catch (SQLException | ClassNotFoundException e) {
                 e.printStackTrace();
             }

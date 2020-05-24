@@ -14,7 +14,7 @@ import java.util.List;
 @WebServlet(urlPatterns = {"/showAllOrders"})
 public class ShowAllOrders extends HttpServlet {
 
-    private OrderService orderService = new OrderService();
+    private final OrderService orderService = new OrderService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -26,7 +26,7 @@ public class ShowAllOrders extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp){
 
         }
     }

@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-@WebServlet(urlPatterns = {"/finalizeOrder"})
+@WebServlet(urlPatterns = {"/finalizeOrders"})
 public class FinalizedOrders extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

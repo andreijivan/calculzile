@@ -14,15 +14,23 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <button class="btn btn-outline-success" type="submit" id="seeAllOrders">Vezi toate comenzile</button>
-                <button class="btn btn-outline-success" type="submit" id="noVirtualOrders">Elimina produse virtuale
-                </button>
                 <button class="btn btn-outline-success" type="submit" id="seeFinalizedOrders">Vezi comenzi finalizate
                 </button>
                 <button class="btn btn-outline-success" type="submit" id="seeVirtualOrders">Vezi comenzi produse
                     virtuale
                 </button>
                 <div class="dropdown">
-                    <button class="btn btn-outline-success dropdown-toggle" type="button" id="dropdownMenuButton"
+                    <button class="btn btn-outline-success dropdown-toggle" type="button" id="dropdownExportButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Exporta
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#" id="xls">XLS</a>
+                        <a class="dropdown-item" href="#" id="pdf">PDF</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-outline-success dropdown-toggle" type="button" id="dropdownSortButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Sorteaza
                     </button>
@@ -66,10 +74,6 @@
         getTable("showAllOrders");
     })
 
-    $("#noVirtualOrders").click(function () {
-        getTable("eliminateVirtualOrders");
-    })
-
     $("#seeAllOrders").click(function () {
         getTable("showAllOrders");
     })
@@ -85,6 +89,15 @@
     $("#searchButton").click(function () {
         let searchedValue = $("#searchInputElement").val();
         getTable("searchOrder?searchValue=" + searchedValue);
+    })
+    $("#seeLocalOrders").click(function () {
+        getTable("showLocalOrders");
+    })
+    $("#seeNationalOrders").click(function () {
+        getTable("showNationalOrders");
+    })
+    $("#seeInternationalOrders").click(function () {
+        getTable("showInternationalOrders");
     })
 
 
