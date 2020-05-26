@@ -28,8 +28,7 @@
         <tr>
             <td><c:out value="${order.status}" /></td>
             <td>
-                <button class="btn btn-outline-success butonFinalizat" type="submit" data-cod_comanda="${order.codComanda}">Finalizat</button>
-                <button class="btn btn-outline-success butonAnulat" type="submit" data-cod_comanda="${order.codComanda}">Anulat</button>
+                <button class="btn btn-outline-success butonFinalizat" type="submit" data-cod_comanda="${order.codComanda}">Gata</button>
             </td>
             <td><c:out value="${order.codComanda}" /></td>
             <td><c:out value="${order.dataComanda}" /></td>
@@ -49,41 +48,3 @@
     </tbody>
 </table>
 
-<script>
-    $(".butonFinalizat").click(function () {
-        let codComanda = $(this).data("cod_comanda");
-        $.ajax({
-            type: "POST",
-            url: "https://polishoporders.herokuapp.com/updateOrderTables" ,
-            contentType: "application/json",
-            data: {
-                "codComanda": codComanda
-            },
-            success: function (data) {
-                console.log(data);
-                $("#tableDiv").html(data);
-            },
-            error: function () {
-                $("#tableDiv").html("A aparut o eroare. Reincercati");
-            }
-        });
-    })
-    $(".butonAnulat").click(function () {
-        let codComanda = $(this).data("cod_comanda");
-        $.ajax({
-            type: "POST",
-            url: "https://polishoporders.herokuapp.com/deleteOrder" ,
-            contentType: "application/json",
-            data: {
-                "codComanda": codComanda
-            },
-            success: function (data) {
-                console.log(data);
-                $("#tableDiv").html(data);
-            },
-            error: function () {
-                $("#tableDiv").html("A aparut o eroare. Reincercati");
-            }
-        });
-    })
-</script>

@@ -21,11 +21,11 @@ public class SearchOrder extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String searchValue = req.getParameter("searchValue");
-        System.out.println("Search value is " + searchValue);
+        //System.out.println("Search value is " + searchValue);
         List<DisplayedOrder> foundOrder = new ArrayList<>();
-        DisplayedOrder x = orderService.orderExists(Integer.parseInt(searchValue));
-        if ( x != null){
-            foundOrder.add(x);
+        DisplayedOrder searchedOrder = orderService.orderExists(Integer.parseInt(searchValue));
+        if ( searchedOrder != null){
+            foundOrder.add(searchedOrder);
             req.setAttribute("orders",foundOrder);
             req.getRequestDispatcher("/jsps/table.jsp").forward(req,resp);
         }

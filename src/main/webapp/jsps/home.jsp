@@ -19,6 +19,8 @@
                 <button class="btn btn-outline-success" type="submit" id="seeVirtualOrders">Vezi comenzi produse
                     virtuale
                 </button>
+                <button class="btn btn-outline-success" type="submit" id="seeDeletedOrders">Vezi comenzi anulate
+                </button>
                 <div class="dropdown">
                     <button class="btn btn-outline-success dropdown-toggle" type="button" id="dropdownExportButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -98,6 +100,9 @@
     })
     $("#seeInternationalOrders").click(function () {
         getTable("showInternationalOrders");
+    })
+    $("#seeDeletedOrders").click(function () {
+        getTable("showDeletedOrders");
     })
 
 

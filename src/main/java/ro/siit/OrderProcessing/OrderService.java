@@ -10,7 +10,7 @@ import java.util.List;
 
 public class OrderService {
 
-        private Connection connection;
+    private Connection connection;
 
     public OrderService() {
         try {
@@ -21,49 +21,50 @@ public class OrderService {
         }
     }
 
-    public List<DisplayedOrder> getAllOrders(){
-         List<DisplayedOrder> orders = new ArrayList<>();
+    public List<DisplayedOrder> getAllOrders() {
+        List<DisplayedOrder> orders = new ArrayList<>();
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM poliorders");
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
-                 String status = rs.getString(1);
-                 int nr = rs.getInt(2);
-                 int codComanda = rs.getInt(3);
-                 String dataComanda = rs.getString(4);
-                 String client = rs.getString(5);
-                 String produse = rs.getString(6);
-                 String adresa = rs.getString(7);
-                 String localitate = rs.getString(8);
-                 String codPostal = rs.getString(9);
-                 String tara = rs.getString(10);
-                 String telefon = rs.getString(11);
-                 String email = rs.getString(12);
-                 String observatii = rs.getString(13);
-                 int valoareProduse = rs.getInt(14);
-                 String incasat = rs.getString(15);
+            while (rs.next()) {
+                String status = rs.getString(1);
+                int nr = rs.getInt(2);
+                int codComanda = rs.getInt(3);
+                String dataComanda = rs.getString(4);
+                String client = rs.getString(5);
+                String produse = rs.getString(6);
+                String adresa = rs.getString(7);
+                String localitate = rs.getString(8);
+                String codPostal = rs.getString(9);
+                String tara = rs.getString(10);
+                String telefon = rs.getString(11);
+                String email = rs.getString(12);
+                String observatii = rs.getString(13);
+                int valoareProduse = rs.getInt(14);
+                String incasat = rs.getString(15);
                 DisplayedOrder checkOrder = new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat);
                 orders.add(checkOrder);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        Collections.sort(orders, Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
+        orders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
         return orders;
     }
 
-     public List<DisplayedOrder> displayFinalizedOrders(){
-         List<DisplayedOrder> finalizedOrders = new ArrayList<>();
-         try {
-             PreparedStatement ps = connection.prepareStatement("SELECT * FROM comenzifinalizate");
-             displayOrderList(finalizedOrders, ps);
-         } catch (SQLException throwables) {
-             throwables.printStackTrace();
-         }
-         return finalizedOrders;
-     }
+    public List<DisplayedOrder> displayFinalizedOrders() {
+        List<DisplayedOrder> finalizedOrders = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM comenzifinalizate");
+            displayOrderList(finalizedOrders, ps);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        finalizedOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
+        return finalizedOrders;
+    }
 
-    public List<DisplayedOrder> displayVirtualOrders(){
+    public List<DisplayedOrder> displayVirtualOrders() {
         List<DisplayedOrder> virtualOrders = new ArrayList<>();
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM produsevirtuale");
@@ -71,13 +72,13 @@ public class OrderService {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        Collections.sort(virtualOrders, Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
+        virtualOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
         return virtualOrders;
     }
 
     private void displayOrderList(List<DisplayedOrder> finalizedOrders, PreparedStatement ps) throws SQLException {
         ResultSet rs = ps.executeQuery();
-        while (rs.next()){
+        while (rs.next()) {
             String status = rs.getString(1);
             int nr = rs.getInt(2);
             int codComanda = rs.getInt(3);
@@ -100,12 +101,12 @@ public class OrderService {
         }
     }
 
-    public List<DisplayedOrder> displayLocalOrders(){
+    public List<DisplayedOrder> displayLocalOrders() {
         List<DisplayedOrder> localOrders = new ArrayList<>();
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM poliorders");
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 String status = rs.getString(1);
                 int nr = rs.getInt(2);
                 int codComanda = rs.getInt(3);
@@ -123,7 +124,7 @@ public class OrderService {
                 String incasat = rs.getString(15);
 
                 DisplayedOrder checkOrder = new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat);
-                if (checkOrder.getLocalitate().contains("TM")){
+                if (checkOrder.getLocalitate().contains("TM")) {
                     localOrders.add(new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat));
                 }
 
@@ -131,16 +132,16 @@ public class OrderService {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        Collections.sort(localOrders, Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
+        localOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
         return localOrders;
     }
 
-    public List<DisplayedOrder> displayNationalOrders(){
+    public List<DisplayedOrder> displayNationalOrders() {
         List<DisplayedOrder> nationalOrders = new ArrayList<>();
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM poliorders");
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 String status = rs.getString(1);
                 int nr = rs.getInt(2);
                 int codComanda = rs.getInt(3);
@@ -158,7 +159,7 @@ public class OrderService {
                 String incasat = rs.getString(15);
 
                 DisplayedOrder checkOrder = new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat);
-                if (checkOrder.getTara().equals("RO") && !checkOrder.getLocalitate().contains("TM")){
+                if (checkOrder.getTara().equals("RO") && !checkOrder.getLocalitate().contains("TM")) {
                     nationalOrders.add(new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat));
                 }
 
@@ -166,16 +167,16 @@ public class OrderService {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        Collections.sort(nationalOrders, Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
+        nationalOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
         return nationalOrders;
     }
 
-    public List<DisplayedOrder> displayInternationalOrders(){
+    public List<DisplayedOrder> displayInternationalOrders() {
         List<DisplayedOrder> internationalOrders = new ArrayList<>();
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM poliorders");
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 String status = rs.getString(1);
                 int nr = rs.getInt(2);
                 int codComanda = rs.getInt(3);
@@ -193,7 +194,7 @@ public class OrderService {
                 String incasat = rs.getString(15);
 
                 DisplayedOrder checkOrder = new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat);
-                if (!checkOrder.getTara().equals("RO")){
+                if (!checkOrder.getTara().equals("RO")) {
                     internationalOrders.add(new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat));
                 }
 
@@ -201,27 +202,26 @@ public class OrderService {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        Collections.sort(internationalOrders, Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
+        internationalOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
         return internationalOrders;
     }
 
-    public DisplayedOrder orderExists(int codComanda){
-        try{
+    public DisplayedOrder orderExists(int codComanda) {
+        try {
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM poliorders WHERE cod_comanda = ?");
-            ps.setInt(1,codComanda);
+            ps.setInt(1, codComanda);
 
             ResultSet rs = ps.executeQuery();
 
 
             if (rs.next()) {
                 System.out.println(rs.getInt(2));
-                return new DisplayedOrder(rs.getString(1),rs.getInt(2),rs.getInt(3),
-                        rs.getString(4),rs.getString(5),rs.getString(6),
-                        rs.getString(7),rs.getString(8),rs.getString(9),rs.getString(10),
-                        rs.getString(11),rs.getString(12),rs.getString(13),rs.getInt(14),
+                return new DisplayedOrder(rs.getString(1), rs.getInt(2), rs.getInt(3),
+                        rs.getString(4), rs.getString(5), rs.getString(6),
+                        rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10),
+                        rs.getString(11), rs.getString(12), rs.getString(13), rs.getInt(14),
                         rs.getString(15));
-            }
-            else return null;
+            } else return null;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -229,6 +229,36 @@ public class OrderService {
         return null;
     }
 
+    public List<DisplayedOrder> getDeletedOrders() {
+        List<DisplayedOrder> deletedOrders = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM comenzianulate");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String status = rs.getString(1);
+                int nr = rs.getInt(2);
+                int codComanda = rs.getInt(3);
+                String dataComanda = rs.getString(4);
+                String client = rs.getString(5);
+                String produse = rs.getString(6);
+                String adresa = rs.getString(7);
+                String localitate = rs.getString(8);
+                String codPostal = rs.getString(9);
+                String tara = rs.getString(10);
+                String telefon = rs.getString(11);
+                String email = rs.getString(12);
+                String observatii = rs.getString(13);
+                int valoareProduse = rs.getInt(14);
+                String incasat = rs.getString(15);
+                DisplayedOrder checkOrder = new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat);
+                deletedOrders.add(checkOrder);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        deletedOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
+        return deletedOrders;
+    }
 
 
 }
