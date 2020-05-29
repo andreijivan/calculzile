@@ -1,16 +1,16 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page isELIgnored="false" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <html lang="en">
 <head>
-
     <link rel="icon" href="https://www.sspolitehnica.ro/wp-content/uploads/2017/07/pt-2-32x32.png" sizes="32x32">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/jsps/css.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css"/>
     <title>Poli Orders</title>
     <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">100 comenzi neprocesate</a>
+        <a class="navbar-brand" href="#" id="totalOrders" >${fn:length(orders)} comenzi neprocesate</a>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <button class="btn btn-outline-success" type="submit" id="seeAllOrders">Vezi toate comenzile</button>
@@ -113,7 +113,6 @@
             url: "https://polishoporders.herokuapp.com/" + url,
             contentType: "application/json",
             success: function (data) {
-                console.log(data);
                 if(data === "NOT_FOUND")
                     alert("Codul cautat nu a fost gasit");
                 else {

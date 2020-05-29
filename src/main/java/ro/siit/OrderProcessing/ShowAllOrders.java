@@ -21,8 +21,8 @@ public class ShowAllOrders extends HttpServlet {
 
         List<DisplayedOrder> totalOrders = orderService.getAllOrders();
         req.setAttribute("orders",totalOrders);
+        req.setAttribute("noOfOrders", totalOrders.size());
         req.getRequestDispatcher("/jsps/table.jsp").forward(req,resp);
-
     }
 
     @Override

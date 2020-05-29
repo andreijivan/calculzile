@@ -8,13 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Scanner;
-import java.util.stream.Collectors;
+
 
 @WebServlet(urlPatterns = {"/showFinalizedOrders"})
 public class FinalizedOrders extends HttpServlet {
@@ -26,6 +21,7 @@ public class FinalizedOrders extends HttpServlet {
 
         List<DisplayedOrder> totalOrders = orderService.displayFinalizedOrders();
         req.setAttribute("orders",totalOrders);
+        req.setAttribute("noOfOrders", totalOrders.size());
         req.getRequestDispatcher("/jsps/finalizedTable.jsp").forward(req,resp);
 
     }

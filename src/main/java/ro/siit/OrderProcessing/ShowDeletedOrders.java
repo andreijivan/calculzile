@@ -21,6 +21,7 @@ public class ShowDeletedOrders extends HttpServlet {
 
         List<DisplayedOrder> totalOrders = orderService.getDeletedOrders();
         req.setAttribute("orders",totalOrders);
+        req.setAttribute("noOfOrders", totalOrders.size());
         req.getRequestDispatcher("/jsps/deletedTable.jsp").forward(req,resp);
 
     }

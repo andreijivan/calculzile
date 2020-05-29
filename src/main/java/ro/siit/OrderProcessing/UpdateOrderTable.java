@@ -28,7 +28,6 @@ public class UpdateOrderTable extends HttpServlet {
         System.out.println(test);
         Scanner scanner = new Scanner(test).useDelimiter("[^0-9]+");
         int codComandaFinalized = scanner.nextInt();
-        System.out.println(codComandaFinalized);
         DisplayedOrder finalizedOrder = orderService.orderExists(codComandaFinalized);
 
         try {

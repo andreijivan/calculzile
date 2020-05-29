@@ -1,8 +1,6 @@
 package ro.siit.OrderProcessing;
 
-import ro.siit.LoginUsers.UserModel.UserService;
 import ro.siit.OrderDetails.DisplayedOrder;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

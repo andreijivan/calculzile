@@ -5,9 +5,7 @@
     <thead>
     <tr>
         <th scope="col">Status</th>
-        <th scope="col">
-            <button class="btn btn-outline-success" type="submit">Finalizat</button>
-        </th>
+        <th scope="col">Action</th>
         <th scope="col">Cod comanda</th>
         <th scope="col">Data</th>
         <th scope="col">Client</th>
@@ -28,7 +26,7 @@
         <tr>
             <td><c:out value="${order.status}" /></td>
             <td>
-                <button class="btn btn-outline-success butonFinalizat" type="submit">Anulat</button>
+                <button class="btn btn-outline-success butonRevocare" type="submit" data-cod_comanda="${order.codComanda}">Revocare</button>
             </td>
             <td><c:out value="${order.codComanda}" /></td>
             <td><c:out value="${order.dataComanda}" /></td>
@@ -47,4 +45,24 @@
     </c:forEach>
     </tbody>
 </table>
+<script>
+    $(".butonRevocare").click(function () {
+        let codComanda = $(this).data("cod_comanda");
+        $.ajax({
+            type: "POST",
+            url: "https://polishoporders.herokuapp.com/revokeDeletedOrder" ,
+            contentType: "application/json",
+            data: {
+                "codComanda": codComanda
+            },
+            success: function (data) {
+                console.log(data);
+                $("#tableDiv").html(data);
+            },
+            error: function () {
+                $("#tableDiv").html("A aparut o eroare. Reincercati");
+            }
+        });
+    })
+</script>
 

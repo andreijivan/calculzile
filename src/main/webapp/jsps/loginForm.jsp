@@ -11,10 +11,12 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="icon" href="https://www.sspolitehnica.ro/wp-content/uploads/2017/07/pt-2-32x32.png" sizes="32x32">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css"/>
     <title>Login Poli Orders</title>
 </head>
 <body>
 <div class="container">
+    <div class="mh-100"style="width: 100px; height: 100px;"></div>
     <div class="row">
         <div class="offset-md-3 col-md-6">
             <h2>Login first!</h2>

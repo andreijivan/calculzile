@@ -260,5 +260,28 @@ public class OrderService {
         return deletedOrders;
     }
 
+    /*public String getNrOfUnprocessedOrders(List<DisplayedOrder> displayedOrders){
+        return displayedOrders.size() + " comenzi neprocesate";
+    }
+
+    public String getNrOfFinalizedOrders(List<DisplayedOrder> displayedOrders){
+        return displayedOrders.size() + " comenzi finalizate";
+    }
+    public String getNrOfVirtualOrders(List<DisplayedOrder> displayedOrders){
+        return displayedOrders.size() + " comenzi virtuale";
+    }
+    public String getNrOfCanceledOrders(List<DisplayedOrder> displayedOrders){
+        return displayedOrders.size() + " comenzi anulate";
+    }
+    public String getNrOfLocalOrders(List<DisplayedOrder> displayedOrders){
+        return displayedOrders.size() + " comenzi locale";
+    }
+    public String getNrOfNationalOrders(List<DisplayedOrder> displayedOrders){
+        return displayedOrders.size() + " comenzi nationale";
+    }
+    public String getNrOfInternationalOrders(List<DisplayedOrder> displayedOrders){
+        return displayedOrders.size() + " comenzi internationale";
+    }*/
+
 
 }
