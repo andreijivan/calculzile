@@ -5,9 +5,7 @@
     <thead>
     <tr>
         <th scope="col">Status</th>
-        <th scope="col">
-            <button class="btn btn-outline-success" type="submit">Finalizat</button>
-        </th>
+        <th scope="col">Action</th>
         <th scope="col">Cod comanda</th>
         <th scope="col">Data</th>
         <th scope="col">Client</th>
@@ -52,7 +50,7 @@
         let codComanda = $(this).data("cod_comanda");
         $.ajax({
             type: "POST",
-            url: "https://polishoporders.herokuapp.com/revokeFinalizedOrder" ,
+            url: "https://polishoporders.herokuapp.com/revokeFinalizedCashOrder" ,
             contentType: "application/json",
             data: {
                 "codComanda": codComanda

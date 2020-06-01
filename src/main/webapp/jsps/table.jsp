@@ -105,4 +105,7 @@ ${fn:length(orders)}--%>
     $(".butonPregatit").click(function () {
        
     })
+    $(".butonLivrat").click(function () {
+
+    })
 </script>

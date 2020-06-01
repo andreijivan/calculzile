@@ -4,7 +4,6 @@ import ro.siit.OrderDetails.DisplayedOrder;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -52,16 +51,38 @@ public class OrderService {
         return orders;
     }
 
-    public List<DisplayedOrder> displayFinalizedOrders() {
-        List<DisplayedOrder> finalizedOrders = new ArrayList<>();
+    public List<DisplayedOrder> displayFinalizedCashOrders() {
+        List<DisplayedOrder> finalizedCashOrders = new ArrayList<>();
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM comenzifinalizate");
-            displayOrderList(finalizedOrders, ps);
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM comenzifinalizatecash");
+            displayOrderList(finalizedCashOrders, ps);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        finalizedOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
-        return finalizedOrders;
+        finalizedCashOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
+        return finalizedCashOrders;
+    }
+    public List<DisplayedOrder> displayFinalizedBankOrders() {
+        List<DisplayedOrder> finalizedBankOrders = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM comenzifinalizatebanca");
+            displayOrderList(finalizedBankOrders, ps);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        finalizedBankOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
+        return finalizedBankOrders;
+    }
+    public List<DisplayedOrder> displayFinalizedCardOrders() {
+        List<DisplayedOrder> finalizedCardOrders = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM comenzifinalizatecard");
+            displayOrderList(finalizedCardOrders, ps);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        finalizedCardOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
+        return finalizedCardOrders;
     }
 
     public List<DisplayedOrder> displayVirtualOrders() {

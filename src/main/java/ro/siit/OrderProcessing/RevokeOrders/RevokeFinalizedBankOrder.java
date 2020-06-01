@@ -1,6 +1,7 @@
-package ro.siit.OrderProcessing;
+package ro.siit.OrderProcessing.RevokeOrders;
 
 import ro.siit.OrderDetails.DisplayedOrder;
+import ro.siit.OrderProcessing.OrderService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,8 +17,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-@WebServlet(urlPatterns = {"/deleteOrder"})
-public class DeleteOrderTable extends HttpServlet {
+@WebServlet(urlPatterns = {"/revokeFinalizedBankOrder"})
+public class RevokeFinalizedBankOrder extends HttpServlet {
 
     OrderService orderService = new OrderService();
 
@@ -26,27 +27,31 @@ public class DeleteOrderTable extends HttpServlet {
 
         String test = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         Scanner scanner = new Scanner(test).useDelimiter("[^0-9]+");
-        int codComandaFinalized = scanner.nextInt();
-        DisplayedOrder finalizedOrder = orderService.orderExists(codComandaFinalized);
-
+        int codComandaRevoked = scanner.nextInt();
         try {
-            //sa iau comanda din poliorders
-            //sa o copiez in comenzifinalizate
             Class.forName("org.postgresql.Driver");
             Connection connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
-
             PreparedStatement ps = connection.prepareStatement
-                    ("INSERT INTO comenzianulate SELECT * from poliorders WHERE cod_comanda = ?");
-            ps.setInt(1, codComandaFinalized);
+                    ("INSERT INTO poliorders SELECT * from comenzifinalizatebanca WHERE cod_comanda = ?");
+            ps.setInt(1, codComandaRevoked);
+            ps.executeUpdate();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            Class.forName("org.postgresql.Driver");
+            Connection connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+            PreparedStatement ps = connection.prepareStatement
+                    ("DELETE FROM comenzifinalizatebanca WHERE cod_comanda = ?");
+            ps.setInt(1, codComandaRevoked);
             ps.executeUpdate();
 
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
-        UpdateOrderTable.deleteFromPoliOrders(codComandaFinalized);
-        List<DisplayedOrder> totalOrders = orderService.getAllOrders();
+        List<DisplayedOrder> totalOrders = orderService.displayFinalizedBankOrders();
         req.setAttribute("orders",totalOrders);
-        req.getRequestDispatcher("/jsps/table.jsp").forward(req,resp);
+        req.getRequestDispatcher("/jsps/finalizedBankTable.jsp").forward(req,resp);
     }
 }
 

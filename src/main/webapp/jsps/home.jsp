@@ -14,8 +14,17 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <button class="btn btn-outline-success" type="submit" id="seeAllOrders">Vezi toate comenzile</button>
-                <button class="btn btn-outline-success" type="submit" id="seeFinalizedOrders">Vezi comenzi finalizate
-                </button>
+                <div class="dropdown">
+                    <button class="btn btn-outline-success dropdown-toggle" type="button" id="dropdownFinalizedButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Vezi comenzi finalizate
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#" id="plataCash">Plata Cash</a>
+                        <a class="dropdown-item" href="#" id="plataCard">Plata Card</a>
+                        <a class="dropdown-item" href="#" id="plataBanca">Plata Banca</a>
+                    </div>
+                </div>
                 <button class="btn btn-outline-success" type="submit" id="seeVirtualOrders">Vezi comenzi produse
                     virtuale
                 </button>
@@ -80,10 +89,6 @@
         getTable("showAllOrders");
     })
 
-    $("#seeFinalizedOrders").click(function () {
-        getTable("showFinalizedOrders");
-    })
-
     $("#seeVirtualOrders").click(function () {
         getTable("showVirtualOrders");
     })
@@ -104,7 +109,15 @@
     $("#seeDeletedOrders").click(function () {
         getTable("showDeletedOrders");
     })
-
+    $("#plataCash").click(function () {
+        getTable("showCashOrders");
+    })
+    $("#plataCard").click(function () {
+        getTable("showCardOrders");
+    })
+    $("#plataBanca").click(function () {
+        getTable("showBankOrders");
+    })
 
     function getTable(url) {
         $("#tableDiv").html("Loading...");

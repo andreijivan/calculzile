@@ -46,11 +46,10 @@ public class populateDB extends HttpServlet {
             String Observatii = order.getCustomer_note();
             int valoareProduse = order.getTotal()-order.getShipping_total();
             String Status = "";
-            String incasat = order.getPayment_method_title();
+            String incasat = String.valueOf(valoareProduse);
 
             if (order.getPayment_method_title().equals("Plata cu cardul / Card payment") || order.getPayment_method_title().equals("Plata cu cardul") ){
                 Status = "Achitat online CARD. De expediat. *Create AWB*";
-                incasat = String.valueOf(valoareProduse);
             }
             else if (order.getPayment_method_title().equals("Transfer bancar (ordin de plată) / Direct bank transfer")){
                 Status = "Achitat online TRANSFER BANCAR. De asteptat confirmare banca. De expediat. *Create AWB*";
@@ -69,48 +68,33 @@ public class populateDB extends HttpServlet {
                 //if produse contains bilete virtuale go to tabel bilete virtuale and poliorders, else go to comenzinefinalizate and poliorders
                 Class.forName("org.postgresql.Driver");
                 Connection connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+                PreparedStatement ps;
                 if((Produse.contains("Bilet virtual") && Produse.length()<90) || (Produse.contains("Cutia virtual") && Produse.length()<90)){
-                    PreparedStatement ps = connection.prepareStatement
+                    ps = connection.prepareStatement
                             ("INSERT INTO comenzivirtuale (status, nr, cod_comanda, data_comanda, client, produse, adresa, localitate,cod_postal, tara, telefon, email, observatii, valoare_produse, incasat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                    ps.setString(1, Status);
-                    ps.setInt(2, Nr);
-                    ps.setInt(3, codComanda);
-                    ps.setString(4,Data);
-                    ps.setString(5,Client);
-                    ps.setString(6, Produse);
-                    ps.setString(7,Adresa);
-                    ps.setString(8,Localitate);
-                    ps.setString(9,codPostal);
-                    ps.setString(10,Tara);
-                    ps.setString(11,nrTelefon);
-                    ps.setString(12,email);
-                    ps.setString(13,Observatii);
-                    ps.setInt(14,valoareProduse);
-                    ps.setString(15,incasat);
 
-                    ps.executeUpdate();
                 }
                 else{
-                    PreparedStatement ps = connection.prepareStatement
+                    ps = connection.prepareStatement
                             ("INSERT INTO poliorders (status, nr, cod_comanda, data_comanda, client, produse, adresa, localitate,cod_postal, tara, telefon, email, observatii, valoare_produse, incasat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                    ps.setString(1, Status);
-                    ps.setInt(2, Nr);
-                    ps.setInt(3, codComanda);
-                    ps.setString(4,Data);
-                    ps.setString(5,Client);
-                    ps.setString(6, Produse);
-                    ps.setString(7,Adresa);
-                    ps.setString(8,Localitate);
-                    ps.setString(9,codPostal);
-                    ps.setString(10,Tara);
-                    ps.setString(11,nrTelefon);
-                    ps.setString(12,email);
-                    ps.setString(13,Observatii);
-                    ps.setInt(14,valoareProduse);
-                    ps.setString(15,incasat);
 
-                    ps.executeUpdate();
                 }
+                ps.setString(1, Status);
+                ps.setInt(2, Nr);
+                ps.setInt(3, codComanda);
+                ps.setString(4,Data);
+                ps.setString(5,Client);
+                ps.setString(6, Produse);
+                ps.setString(7,Adresa);
+                ps.setString(8,Localitate);
+                ps.setString(9,codPostal);
+                ps.setString(10,Tara);
+                ps.setString(11,nrTelefon);
+                ps.setString(12,email);
+                ps.setString(13,Observatii);
+                ps.setInt(14,valoareProduse);
+                ps.setString(15,incasat);
+                ps.executeUpdate();
             } catch (SQLException | ClassNotFoundException e) {
                 e.printStackTrace();
             }

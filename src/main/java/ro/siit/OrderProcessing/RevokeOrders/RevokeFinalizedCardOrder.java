@@ -1,6 +1,7 @@
-package ro.siit.OrderProcessing;
+package ro.siit.OrderProcessing.RevokeOrders;
 
 import ro.siit.OrderDetails.DisplayedOrder;
+import ro.siit.OrderProcessing.OrderService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,8 +17,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-@WebServlet(urlPatterns = {"/revokeDeletedOrder"})
-public class RevokeDeletedOrder extends HttpServlet {
+@WebServlet(urlPatterns = {"/revokeFinalizedCardOrder"})
+public class RevokeFinalizedCardOrder extends HttpServlet {
 
     OrderService orderService = new OrderService();
 
@@ -27,34 +28,30 @@ public class RevokeDeletedOrder extends HttpServlet {
         String test = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         Scanner scanner = new Scanner(test).useDelimiter("[^0-9]+");
         int codComandaRevoked = scanner.nextInt();
-
         try {
             Class.forName("org.postgresql.Driver");
             Connection connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
-
             PreparedStatement ps = connection.prepareStatement
-                    ("INSERT INTO poliorders SELECT * from comenzianulate WHERE cod_comanda = ?");
+                    ("INSERT INTO poliorders SELECT * from comenzifinalizatecard WHERE cod_comanda = ?");
+            ps.setInt(1, codComandaRevoked);
+            ps.executeUpdate();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            Class.forName("org.postgresql.Driver");
+            Connection connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+            PreparedStatement ps = connection.prepareStatement
+                    ("DELETE FROM comenzifinalizatecard WHERE cod_comanda = ?");
             ps.setInt(1, codComandaRevoked);
             ps.executeUpdate();
 
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
-        try {
-            //sa actualizez show all orders
-            Class.forName("org.postgresql.Driver");
-            Connection connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
-            PreparedStatement ps = connection.prepareStatement
-                    ("DELETE FROM comenzianulate WHERE cod_comanda = ?");
-            ps.setInt(1, codComandaRevoked);
-            ps.executeUpdate();
-
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
-        List<DisplayedOrder> totalOrders = orderService.getDeletedOrders();
+        List<DisplayedOrder> totalOrders = orderService.displayFinalizedCardOrders();
         req.setAttribute("orders",totalOrders);
-        req.getRequestDispatcher("/jsps/deletedTable.jsp").forward(req,resp);
+        req.getRequestDispatcher("/jsps/finalizedCardTable.jsp").forward(req,resp);
     }
 }
 
