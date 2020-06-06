@@ -38,10 +38,12 @@ ${fn:length(orders)}--%>
                 <button class="btn btn-outline-success butonAnulat" type="submit"
                         data-cod_comanda="${order.codComanda}">Anulat
                 </button>
-                <button class="btn btn-outline-success butonPregatit" input type="checkbox" data-toggle="toggle"
+                <button class="btn btn-outline-success butonPregatit <%--<c:if test="${order.state == "ready"}">
+ <c:out value="active"/>
+</c:if>--%>" input type="checkbox" data-toggle="toggle"
                         data-cod_comanda="${order.codComanda}">Pregatit
                 </button>
-                <button class="btn btn-outline-success butonLivrat" input type="checkbox" data-toggle="toggle"
+                <button class="btn btn-outline-success butonLivrat  [if(order.styate == shipped) active]" input type="checkbox" data-toggle="toggle"
                         data-cod_comanda="${order.codComanda}">Livrat
                 </button>
 
@@ -108,4 +110,8 @@ ${fn:length(orders)}--%>
     $(".butonLivrat").click(function () {
 
     })
+</script>
+<script>
+    document.getElementById("noOfOrders").innerHTML="${fn:length(orders)}"
+    //$("#noOfOrders").html(${fn:length(orders)});
 </script>

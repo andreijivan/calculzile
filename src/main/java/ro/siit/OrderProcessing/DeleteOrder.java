@@ -17,7 +17,7 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = {"/deleteOrder"})
-public class DeleteOrderTable extends HttpServlet {
+public class DeleteOrder extends HttpServlet {
 
     OrderService orderService = new OrderService();
 
@@ -26,24 +26,26 @@ public class DeleteOrderTable extends HttpServlet {
 
         String test = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         Scanner scanner = new Scanner(test).useDelimiter("[^0-9]+");
-        int codComandaFinalized = scanner.nextInt();
-        DisplayedOrder finalizedOrder = orderService.orderExists(codComandaFinalized);
+        int codComandaDelete = scanner.nextInt();
+        DisplayedOrder finalizedOrder = orderService.orderExists(codComandaDelete);
+        Connection connection = null;
 
         try {
-            //sa iau comanda din poliorders
-            //sa o copiez in comenzifinalizate
             Class.forName("org.postgresql.Driver");
-            Connection connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
 
             PreparedStatement ps = connection.prepareStatement
                     ("INSERT INTO comenzianulate SELECT * from poliorders WHERE cod_comanda = ?");
-            ps.setInt(1, codComandaFinalized);
+            ps.setInt(1, codComandaDelete);
             ps.executeUpdate();
+            ps.close();
 
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
+        }finally {
+            try { connection.close(); } catch (Exception e) { /* ignored */ }
         }
-        UpdateOrderTable.deleteFromPoliOrders(codComandaFinalized);
+        UpdateOrderTable.deleteFromPoliOrders(codComandaDelete);
         List<DisplayedOrder> totalOrders = orderService.getAllOrders();
         req.setAttribute("orders",totalOrders);
         req.getRequestDispatcher("/jsps/table.jsp").forward(req,resp);

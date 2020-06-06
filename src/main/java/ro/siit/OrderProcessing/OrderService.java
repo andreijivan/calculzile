@@ -11,18 +11,20 @@ public class OrderService {
 
     private Connection connection;
 
-    public OrderService() {
+  /*  public OrderService() {
         try {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
         } catch (Exception throwables) {
             throwables.printStackTrace();
         }
-    }
+    }*/
 
     public List<DisplayedOrder> getAllOrders() {
         List<DisplayedOrder> orders = new ArrayList<>();
-        try {
+        try{
+            Class.forName("org.postgresql.Driver");
+            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM poliorders");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -44,8 +46,12 @@ public class OrderService {
                 DisplayedOrder checkOrder = new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat);
                 orders.add(checkOrder);
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            ps.close();
+
+        } catch (Exception throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try { connection.close(); } catch (Exception e) { /* ignored */ }
         }
         orders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
         return orders;
@@ -54,10 +60,16 @@ public class OrderService {
     public List<DisplayedOrder> displayFinalizedCashOrders() {
         List<DisplayedOrder> finalizedCashOrders = new ArrayList<>();
         try {
+            Class.forName("org.postgresql.Driver");
+            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM comenzifinalizatecash");
             displayOrderList(finalizedCashOrders, ps);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            ps.close();
+        } catch (SQLException | ClassNotFoundException throwable) {
+            throwable.printStackTrace();
+        }
+        finally {
+            try { connection.close(); } catch (Exception e) { /* ignored */ }
         }
         finalizedCashOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
         return finalizedCashOrders;
@@ -65,10 +77,15 @@ public class OrderService {
     public List<DisplayedOrder> displayFinalizedBankOrders() {
         List<DisplayedOrder> finalizedBankOrders = new ArrayList<>();
         try {
+            Class.forName("org.postgresql.Driver");
+            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM comenzifinalizatebanca");
             displayOrderList(finalizedBankOrders, ps);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            ps.close();
+        } catch (SQLException | ClassNotFoundException throwable) {
+            throwable.printStackTrace();
+        } finally {
+            try { connection.close(); } catch (Exception e) { /* ignored */ }
         }
         finalizedBankOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
         return finalizedBankOrders;
@@ -76,10 +93,15 @@ public class OrderService {
     public List<DisplayedOrder> displayFinalizedCardOrders() {
         List<DisplayedOrder> finalizedCardOrders = new ArrayList<>();
         try {
+            Class.forName("org.postgresql.Driver");
+            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM comenzifinalizatecard");
             displayOrderList(finalizedCardOrders, ps);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            ps.close();
+        } catch (Exception throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try { connection.close(); } catch (Exception e) { /* ignored */ }
         }
         finalizedCardOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
         return finalizedCardOrders;
@@ -88,10 +110,16 @@ public class OrderService {
     public List<DisplayedOrder> displayVirtualOrders() {
         List<DisplayedOrder> virtualOrders = new ArrayList<>();
         try {
+            Class.forName("org.postgresql.Driver");
+            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM produsevirtuale");
             displayOrderList(virtualOrders, ps);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            ps.close();
+        } catch (Exception throwable) {
+            throwable.printStackTrace();
+        }
+        finally {
+            try { connection.close(); } catch (Exception e) { /* ignored */ }
         }
         virtualOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
         return virtualOrders;
@@ -117,14 +145,14 @@ public class OrderService {
             String incasat = rs.getString(15);
 
             finalizedOrders.add(new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat));
-
-
         }
     }
 
     public List<DisplayedOrder> displayLocalOrders() {
         List<DisplayedOrder> localOrders = new ArrayList<>();
         try {
+            Class.forName("org.postgresql.Driver");
+            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM poliorders");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -148,10 +176,12 @@ public class OrderService {
                 if (checkOrder.getLocalitate().contains("TM")) {
                     localOrders.add(new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat));
                 }
-
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            ps.close();
+        } catch (Exception throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try { connection.close(); } catch (Exception e) { /* ignored */ }
         }
         localOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
         return localOrders;
@@ -160,6 +190,8 @@ public class OrderService {
     public List<DisplayedOrder> displayNationalOrders() {
         List<DisplayedOrder> nationalOrders = new ArrayList<>();
         try {
+            Class.forName("org.postgresql.Driver");
+            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM poliorders");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -183,10 +215,12 @@ public class OrderService {
                 if (checkOrder.getTara().equals("RO") && !checkOrder.getLocalitate().contains("TM")) {
                     nationalOrders.add(new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat));
                 }
-
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            ps.close();
+        } catch (Exception throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try { connection.close(); } catch (Exception e) { /* ignored */ }
         }
         nationalOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
         return nationalOrders;
@@ -195,6 +229,8 @@ public class OrderService {
     public List<DisplayedOrder> displayInternationalOrders() {
         List<DisplayedOrder> internationalOrders = new ArrayList<>();
         try {
+            Class.forName("org.postgresql.Driver");
+            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM poliorders");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -218,10 +254,13 @@ public class OrderService {
                 if (!checkOrder.getTara().equals("RO")) {
                     internationalOrders.add(new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat));
                 }
-
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            ps.close();
+        } catch (Exception throwable) {
+            throwable.printStackTrace();
+        }
+        finally {
+            try { connection.close(); } catch (Exception e) { /* ignored */ }
         }
         internationalOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
         return internationalOrders;
@@ -229,23 +268,25 @@ public class OrderService {
 
     public DisplayedOrder orderExists(int codComanda) {
         try {
+            Class.forName("org.postgresql.Driver");
+            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM poliorders WHERE cod_comanda = ?");
             ps.setInt(1, codComanda);
-
             ResultSet rs = ps.executeQuery();
-
-
             if (rs.next()) {
-                System.out.println(rs.getInt(2));
+               // System.out.println(rs.getInt(2));
+
                 return new DisplayedOrder(rs.getString(1), rs.getInt(2), rs.getInt(3),
                         rs.getString(4), rs.getString(5), rs.getString(6),
                         rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10),
                         rs.getString(11), rs.getString(12), rs.getString(13), rs.getInt(14),
                         rs.getString(15));
-            } else return null;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+            }
+        } catch (Exception throwable) {
+            throwable.printStackTrace();
+        }
+        finally {
+            try { connection.close(); } catch (Exception e) { /* ignored */ }
         }
         return null;
     }
@@ -253,6 +294,8 @@ public class OrderService {
     public List<DisplayedOrder> getDeletedOrders() {
         List<DisplayedOrder> deletedOrders = new ArrayList<>();
         try {
+            Class.forName("org.postgresql.Driver");
+            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM comenzianulate");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -274,35 +317,14 @@ public class OrderService {
                 DisplayedOrder checkOrder = new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat);
                 deletedOrders.add(checkOrder);
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            ps.close();
+        } catch (Exception throwable) {
+            throwable.printStackTrace();
+        }finally {
+            try { connection.close(); } catch (Exception e) { /* ignored */ }
         }
         deletedOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
         return deletedOrders;
     }
-
-    /*public String getNrOfUnprocessedOrders(List<DisplayedOrder> displayedOrders){
-        return displayedOrders.size() + " comenzi neprocesate";
-    }
-
-    public String getNrOfFinalizedOrders(List<DisplayedOrder> displayedOrders){
-        return displayedOrders.size() + " comenzi finalizate";
-    }
-    public String getNrOfVirtualOrders(List<DisplayedOrder> displayedOrders){
-        return displayedOrders.size() + " comenzi virtuale";
-    }
-    public String getNrOfCanceledOrders(List<DisplayedOrder> displayedOrders){
-        return displayedOrders.size() + " comenzi anulate";
-    }
-    public String getNrOfLocalOrders(List<DisplayedOrder> displayedOrders){
-        return displayedOrders.size() + " comenzi locale";
-    }
-    public String getNrOfNationalOrders(List<DisplayedOrder> displayedOrders){
-        return displayedOrders.size() + " comenzi nationale";
-    }
-    public String getNrOfInternationalOrders(List<DisplayedOrder> displayedOrders){
-        return displayedOrders.size() + " comenzi internationale";
-    }*/
-
 
 }

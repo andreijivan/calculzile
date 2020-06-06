@@ -95,8 +95,12 @@ public class populateDB extends HttpServlet {
                 ps.setInt(14,valoareProduse);
                 ps.setString(15,incasat);
                 ps.executeUpdate();
+
             } catch (SQLException | ClassNotFoundException e) {
                 e.printStackTrace();
+            }
+            finally {
+
             }
         }
     }

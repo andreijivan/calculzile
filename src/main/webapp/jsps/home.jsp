@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css"/>
     <title>Poli Orders</title>
     <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#" id="totalOrders" >${fn:length(orders)} comenzi neprocesate</a>
+        <a class="navbar-brand" href="#" id="totalOrders" ><span id="noOfOrders">0</span> comenzi neprocesate</a>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <button class="btn btn-outline-success" type="submit" id="seeAllOrders">Vezi toate comenzile</button>

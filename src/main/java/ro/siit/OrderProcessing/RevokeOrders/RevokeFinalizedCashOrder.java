@@ -27,26 +27,32 @@ public class RevokeFinalizedCashOrder extends HttpServlet {
         String test = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         Scanner scanner = new Scanner(test).useDelimiter("[^0-9]+");
         int codComandaRevoked = scanner.nextInt();
+        Connection connection = null;
         try {
             Class.forName("org.postgresql.Driver");
-            Connection connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
             PreparedStatement ps = connection.prepareStatement
                     ("INSERT INTO poliorders SELECT * from comenzifinalizatecash WHERE cod_comanda = ?");
             ps.setInt(1, codComandaRevoked);
             ps.executeUpdate();
+            ps.close();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
+        } finally {
+            try { connection.close(); } catch (Exception e) { /* ignored */ }
         }
         try {
             Class.forName("org.postgresql.Driver");
-            Connection connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
             PreparedStatement ps = connection.prepareStatement
                     ("DELETE FROM comenzifinalizatecash WHERE cod_comanda = ?");
             ps.setInt(1, codComandaRevoked);
             ps.executeUpdate();
-
+            ps.close();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
+        } finally {
+            try { connection.close(); } catch (Exception e) { /* ignored */ }
         }
         List<DisplayedOrder> totalOrders = orderService.displayFinalizedCashOrders();
         req.setAttribute("orders",totalOrders);

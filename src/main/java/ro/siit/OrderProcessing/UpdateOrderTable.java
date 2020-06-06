@@ -31,17 +31,20 @@ public class UpdateOrderTable extends HttpServlet {
         DisplayedOrder finalizedOrder = orderService.orderExists(codComandaFinalized);
 
         if (finalizedOrder.getStatus().contains("Achitat online CARD")) {
+            Connection connection = null;
             try {
                 Class.forName("org.postgresql.Driver");
-                Connection connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
-
+                connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
                 PreparedStatement ps = connection.prepareStatement
                         ("INSERT INTO comenzifinalizatecard SELECT * from poliorders WHERE cod_comanda = ?");
                 ps.setInt(1, codComandaFinalized);
                 ps.executeUpdate();
+                ps.close();
 
             } catch (ClassNotFoundException | SQLException e) {
                 e.printStackTrace();
+            }finally {
+                try { connection.close(); } catch (Exception e) { /* ignored */ }
             }
             deleteFromPoliOrders(codComandaFinalized);
 
@@ -49,17 +52,21 @@ public class UpdateOrderTable extends HttpServlet {
             insertIntoBanca(codComandaFinalized);
 
         } else if (finalizedOrder.getStatus().contains("Plata ramburs. Ridicare personala")) {
+            Connection connection = null;
             try {
                 Class.forName("org.postgresql.Driver");
-                Connection connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+                connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
 
                 PreparedStatement ps = connection.prepareStatement
                         ("INSERT INTO comenzifinalizatecash SELECT * from poliorders WHERE cod_comanda = ?");
                 ps.setInt(1, codComandaFinalized);
                 ps.executeUpdate();
+                ps.close();
 
             } catch (ClassNotFoundException | SQLException e) {
                 e.printStackTrace();
+            }finally {
+                try { connection.close(); } catch (Exception e) { /* ignored */ }
             }
             deleteFromPoliOrders(codComandaFinalized);
         }
@@ -74,32 +81,40 @@ public class UpdateOrderTable extends HttpServlet {
     }
 
     private void insertIntoBanca(int codComandaFinalized) {
+        Connection connection = null;
         try {
             Class.forName("org.postgresql.Driver");
-            Connection connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+             connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
 
             PreparedStatement ps = connection.prepareStatement
                     ("INSERT INTO comenzifinalizatebanca SELECT * from poliorders WHERE cod_comanda = ?");
             ps.setInt(1, codComandaFinalized);
             ps.executeUpdate();
+            ps.close();
 
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
+        } finally {
+            try { connection.close(); } catch (Exception e) { /* ignored */ }
         }
         deleteFromPoliOrders(codComandaFinalized);
     }
 
     static void deleteFromPoliOrders(int codComandaFinalized) {
+        Connection connection = null;
         try {
             Class.forName("org.postgresql.Driver");
-            Connection connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
             PreparedStatement ps = connection.prepareStatement
                     ("DELETE FROM poliorders WHERE cod_comanda = ?");
             ps.setInt(1, codComandaFinalized);
             ps.executeUpdate();
+            ps.close();
 
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
+        }finally {
+            try { connection.close(); } catch (Exception e) { /* ignored */ }
         }
     }
 }

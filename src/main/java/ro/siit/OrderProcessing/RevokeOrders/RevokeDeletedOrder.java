@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-@WebServlet(urlPatterns = {"/revokeFinalizedBankOrder"})
-public class RevokeFinalizedBankOrder extends HttpServlet {
+@WebServlet(urlPatterns = {"/revokeDeletedOrder"})
+public class RevokeDeletedOrder extends HttpServlet {
 
     OrderService orderService = new OrderService();
 
@@ -33,7 +33,7 @@ public class RevokeFinalizedBankOrder extends HttpServlet {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
             PreparedStatement ps = connection.prepareStatement
-                    ("INSERT INTO poliorders SELECT * from comenzifinalizatebanca WHERE cod_comanda = ?");
+                    ("INSERT INTO poliorders SELECT * from comenzianulate WHERE cod_comanda = ?");
             ps.setInt(1, codComandaRevoked);
             ps.executeUpdate();
             ps.close();
@@ -46,19 +46,19 @@ public class RevokeFinalizedBankOrder extends HttpServlet {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
             PreparedStatement ps = connection.prepareStatement
-                    ("DELETE FROM comenzifinalizatebanca WHERE cod_comanda = ?");
+                    ("DELETE FROM comenzianulate WHERE cod_comanda = ?");
             ps.setInt(1, codComandaRevoked);
             ps.executeUpdate();
             ps.close();
 
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             try { connection.close(); } catch (Exception e) { /* ignored */ }
         }
-        List<DisplayedOrder> totalOrders = orderService.displayFinalizedBankOrders();
+        List<DisplayedOrder> totalOrders = orderService.getDeletedOrders();
         req.setAttribute("orders",totalOrders);
-        req.getRequestDispatcher("/jsps/finalizedBankTable.jsp").forward(req,resp);
+        req.getRequestDispatcher("/jsps/deletedTable.jsp").forward(req,resp);
     }
 }
 

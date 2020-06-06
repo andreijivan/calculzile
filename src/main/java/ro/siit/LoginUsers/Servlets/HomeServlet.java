@@ -1,7 +1,5 @@
 package ro.siit.LoginUsers.Servlets;
 
-import ro.siit.OrderDetails.DisplayedOrder;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
