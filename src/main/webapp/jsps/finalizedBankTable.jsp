@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page isELIgnored="false" %>
 <table class="table table-hover">
     <thead>
@@ -65,4 +66,6 @@
         });
     })
 </script>
-
+<script>
+    document.getElementById("noOfOrders").innerHTML="${fn:length(orders)}"
+</script>

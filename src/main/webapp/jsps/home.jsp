@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css"/>
     <title>Poli Orders</title>
     <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#" id="totalOrders" ><span id="noOfOrders">0</span> comenzi neprocesate</a>
+        <a class="navbar-brand" href="#" id="totalOrders" ><span id="noOfOrders">0</span> comenzi</a>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <button class="btn btn-outline-success" type="submit" id="seeAllOrders">Vezi toate comenzile</button>
@@ -60,7 +60,6 @@
             <div class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-2" type="number" placeholder="Search Cod comanda" aria-label="Search" name="searchOrder" id="searchInputElement">
                 <button class="btn btn-outline-success" type="button" id="searchButton">Search</button>
-                </button>
             </div>
         </div>
     </nav>

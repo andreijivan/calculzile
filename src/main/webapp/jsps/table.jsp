@@ -2,11 +2,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page isELIgnored="false" %>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css"/>
 <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-<%--${orders.size()}
-${fn:length(orders)}--%>
-<%--<c:out value="${noOfOrders}"/>--%>
+
 <table class="table table-hover">
     <thead>
     <tr>
@@ -38,14 +37,13 @@ ${fn:length(orders)}--%>
                 <button class="btn btn-outline-success butonAnulat" type="submit"
                         data-cod_comanda="${order.codComanda}">Anulat
                 </button>
-                <button class="btn btn-outline-success butonPregatit <%--<c:if test="${order.state == "ready"}">
- <c:out value="active"/>
-</c:if>--%>" input type="checkbox" data-toggle="toggle"
-                        data-cod_comanda="${order.codComanda}">Pregatit
-                </button>
-                <button class="btn btn-outline-success butonLivrat  [if(order.styate == shipped) active]" input type="checkbox" data-toggle="toggle"
-                        data-cod_comanda="${order.codComanda}">Livrat
-                </button>
+                <button class="btn btn-outline-success butonPregatit"
+<c:if test="${order.state eq 'pregatit'}">style="css-style:${yourProp}"</c:if>
+ input type="checkbox" data-toggle="toggle" data-cod_comanda="${order.codComanda}">Pregatit</button>
+
+                <button class="btn btn-outline-success butonLivrat"
+<c:if test="${order.state eq 'livrat'}">style="css-style:${yourProp}"</c:if>
+                    input type="checkbox" data-toggle="toggle" data-cod_comanda="${order.codComanda}">Livrat</button>
 
 
             </td>
@@ -69,7 +67,7 @@ ${fn:length(orders)}--%>
 
 <script>
     $(".butonFinalizat").click(function () {
-       let codComanda = $(this).data("cod_comanda");
+        let codComanda = $(this).data("cod_comanda");
         $.ajax({
             type: "POST",
             url: "https://polishoporders.herokuapp.com/updateOrderTables",
@@ -105,13 +103,42 @@ ${fn:length(orders)}--%>
         });
     })
     $(".butonPregatit").click(function () {
-       
+        let codComanda = $(this).data("cod_comanda");
+        $.ajax({
+            type: "POST",
+            url: "https://polishoporders.herokuapp.com/changeStatePregatit",
+            contentType: "application/json",
+            data: {
+                "codComanda": codComanda
+            },
+            success: function (data) {
+                console.log(data);
+                $("#tableDiv").html(data);
+            },
+            error: function () {
+                $("#tableDiv").html("A aparut o eroare. Reincercati");
+            }
+        });
     })
     $(".butonLivrat").click(function () {
-
+        let codComanda = $(this).data("cod_comanda");
+        $.ajax({
+            type: "POST",
+            url: "https://polishoporders.herokuapp.com/changeStateLivrat",
+            contentType: "application/json",
+            data: {
+                "codComanda": codComanda
+            },
+            success: function (data) {
+                console.log(data);
+                $("#tableDiv").html(data);
+            },
+            error: function () {
+                $("#tableDiv").html("A aparut o eroare. Reincercati");
+            }
+        });
     })
 </script>
 <script>
-    document.getElementById("noOfOrders").innerHTML="${fn:length(orders)}"
-    //$("#noOfOrders").html(${fn:length(orders)});
+    document.getElementById("noOfOrders").innerHTML = "${fn:length(orders)}"
 </script>

@@ -20,6 +20,7 @@ public class ShowBankOrders extends HttpServlet {
 
         List<DisplayedOrder> totalOrders = orderService.displayFinalizedBankOrders();
         req.setAttribute("orders",totalOrders);
+        req.setAttribute("noOfOrders", totalOrders.size());
         req.getRequestDispatcher("/jsps/finalizedBankTable.jsp").forward(req,resp);
     }
 

@@ -20,6 +20,7 @@ public class ShowCardOrders extends HttpServlet {
 
         List<DisplayedOrder> totalOrders = orderService.displayFinalizedCardOrders();
         req.setAttribute("orders",totalOrders);
+        req.setAttribute("noOfOrders", totalOrders.size());
         req.getRequestDispatcher("/jsps/finalizedCardTable.jsp").forward(req,resp);
     }
 

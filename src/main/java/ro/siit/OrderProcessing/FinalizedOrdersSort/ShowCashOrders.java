@@ -19,6 +19,7 @@ public class ShowCashOrders extends HttpServlet {
 
         List<DisplayedOrder> totalOrders = orderService.displayFinalizedCashOrders();
         req.setAttribute("orders",totalOrders);
+        req.setAttribute("noOfOrders", totalOrders.size());
         req.getRequestDispatcher("/jsps/finalizedCashTable.jsp").forward(req,resp);
     }
 

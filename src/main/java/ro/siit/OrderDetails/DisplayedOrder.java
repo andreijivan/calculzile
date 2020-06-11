@@ -22,7 +22,7 @@ public class DisplayedOrder {
      private String observatii;
      private int valoareProduse;
      private String incasat;
-// private String state: pending, ready, shipped
+     private String state;
 
 }
 
