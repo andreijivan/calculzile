@@ -6,7 +6,7 @@
 <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
-<table class="table table-hover">
+<table class="table table-hover" style="width: 100%">
     <thead>
     <tr>
         <th scope="col">Status</th>
@@ -24,6 +24,7 @@
         <th scope="col">Observatii</th>
         <th scope="col">Valoare produse</th>
         <th scope="col">Incasat</th>
+        <th scope="col">Cost livrare</th>
     </tr>
     </thead>
     <tbody>
@@ -38,11 +39,11 @@
                         data-cod_comanda="${order.codComanda}">Anulat
                 </button>
                 <button class="btn btn-outline-success butonPregatit"
-<c:if test="${order.state eq 'pregatit'}">style="css-style:${yourProp}"</c:if>
+<c:if test="${order.state eq 'pregatit'}">style="color: white; border-color: rebeccapurple; background-color: rebeccapurple;"</c:if>
  input type="checkbox" data-toggle="toggle" data-cod_comanda="${order.codComanda}">Pregatit</button>
 
                 <button class="btn btn-outline-success butonLivrat"
-<c:if test="${order.state eq 'livrat'}">style="css-style:${yourProp}"</c:if>
+<c:if test="${order.state eq 'livrat'}">style="color: white; border-color: rebeccapurple; background-color: rebeccapurple;"</c:if>
                     input type="checkbox" data-toggle="toggle" data-cod_comanda="${order.codComanda}">Livrat</button>
 
 
@@ -60,6 +61,7 @@
             <td><c:out value="${order.observatii}"/></td>
             <td><c:out value="${order.valoareProduse}"/></td>
             <td><c:out value="${order.incasat}"/></td>
+            <td><c:out value="${order.valoareLivrare}"/></td>
         </tr>
     </c:forEach>
     </tbody>
@@ -140,5 +142,5 @@
     })
 </script>
 <script>
-    document.getElementById("noOfOrders").innerHTML = "${fn:length(orders)}"
+    $("#noOfOrders").html("${fn:length(orders)}")
 </script>

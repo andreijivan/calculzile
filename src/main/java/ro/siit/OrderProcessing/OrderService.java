@@ -134,10 +134,11 @@ public class OrderService {
                 int valoareProduse = rs.getInt(14);
                 String incasat = rs.getString(15);
                 String state = rs.getString(16);
+                String valoareLivrare = rs.getString(17);
 
-                DisplayedOrder checkOrder = new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat, state);
+                DisplayedOrder checkOrder = new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat, state, valoareLivrare);
                 if (checkOrder.getLocalitate().contains("TM")) {
-                    localOrders.add(new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat, state));
+                    localOrders.add(new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat, state, valoareLivrare));
                 }
             }
             ps.close();
@@ -176,10 +177,11 @@ public class OrderService {
                 int valoareProduse = rs.getInt(14);
                 String incasat = rs.getString(15);
                 String state = rs.getString(16);
+                String valoareLivrare = rs.getString(17);
 
-                DisplayedOrder checkOrder = new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat, state);
+                DisplayedOrder checkOrder = new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat, state, valoareLivrare);
                 if (checkOrder.getTara().equals("RO") && !checkOrder.getLocalitate().contains("TM")) {
-                    nationalOrders.add(new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat, state));
+                    nationalOrders.add(new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat, state, valoareLivrare));
                 }
             }
             ps.close();
@@ -218,10 +220,11 @@ public class OrderService {
                 int valoareProduse = rs.getInt(14);
                 String incasat = rs.getString(15);
                 String state = rs.getString(16);
+                String valoareLivrare = rs.getString(17);
 
-                DisplayedOrder checkOrder = new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat, state);
+                DisplayedOrder checkOrder = new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat, state, valoareLivrare);
                 if (!checkOrder.getTara().equals("RO")) {
-                    internationalOrders.add(new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat, state));
+                    internationalOrders.add(new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat, state, valoareLivrare));
                 }
             }
             ps.close();
@@ -250,7 +253,7 @@ public class OrderService {
                         rs.getString(4), rs.getString(5), rs.getString(6),
                         rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10),
                         rs.getString(11), rs.getString(12), rs.getString(13), rs.getInt(14),
-                        rs.getString(15), rs.getString(16));
+                        rs.getString(15), rs.getString(16), rs.getString(17));
             }
         } catch (Exception throwable) {
             throwable.printStackTrace();
@@ -301,7 +304,8 @@ public class OrderService {
             int valoareProduse = rs.getInt(14);
             String incasat = rs.getString(15);
             String state = rs.getString(16);
-            DisplayedOrder checkOrder = new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat, state);
+            String valoareLivrare = rs.getString(17);
+            DisplayedOrder checkOrder = new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat, state, valoareLivrare);
             orders.add(checkOrder);
         }
         ps.close();
@@ -326,8 +330,9 @@ public class OrderService {
             int valoareProduse = rs.getInt(14);
             String incasat = rs.getString(15);
             String state = rs.getString(16);
+            String valoareLivrare = rs.getString(17);
 
-            finalizedOrders.add(new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat, state));
+            finalizedOrders.add(new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat, state, valoareLivrare));
         }
     }
 

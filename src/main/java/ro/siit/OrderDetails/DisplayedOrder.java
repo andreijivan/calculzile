@@ -23,6 +23,7 @@ public class DisplayedOrder {
      private int valoareProduse;
      private String incasat;
      private String state;
+     private String valoareLivrare;
 
 }
 

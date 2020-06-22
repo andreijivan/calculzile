@@ -1,3 +1,15 @@
+table {
+    width: 100%;
+    border: 1px solid #000;
+}
+th.Produse {
+    width:20%
+}
+th.Email {
+    width:8%
+}
+
+
 th {
     box-shadow: inset 2px -2px #000;
 }

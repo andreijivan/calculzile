@@ -117,8 +117,12 @@
     $("#plataBanca").click(function () {
         getTable("showBankOrders");
     })
+    $("#xls").click(download);
+
+    let currentURL = "showAllOrders";
 
     function getTable(url) {
+        currentURL = url;
         $("#tableDiv").html("Loading...");
         $.ajax({
             type: "GET",
@@ -137,6 +141,26 @@
         });
 
     }
+    function download(){
+        $("#tableDiv").html("Loading...");
+        $.ajax({
+            type: "GET",
+            url: "https://polishoporders.herokuapp.com/exportXLS",
+            contentType: "application/json",
+            success: function (data) {
+                if(data === "NOT_FOUND")
+                    alert("Codul cautat nu a fost gasit");
+                else {
+                    $("#tableDiv").html(data);
+                }
+            },
+            error: function () {
+                $("#tableDiv").html("A aparut o eroare. Reincercati");
+            }
+        });
+        /*window.location = "https://polishoporders.herokuapp.com/" + currentURL;*/
+    }
+
 </script>
 
 

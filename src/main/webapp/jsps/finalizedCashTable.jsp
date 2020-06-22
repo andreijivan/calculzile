@@ -20,6 +20,7 @@
         <th scope="col">Observatii</th>
         <th scope="col">Valoare produse</th>
         <th scope="col">Incasat</th>
+        <th scope="col">Cost livrare</th>
     </tr>
     </thead>
     <tbody>
@@ -42,6 +43,7 @@
             <td><c:out value="${order.observatii}" /></td>
             <td><c:out value="${order.valoareProduse}" /></td>
             <td><c:out value="${order.incasat}" /></td>
+            <td><c:out value="${order.valoareLivrare}"/></td>
         </tr>
     </c:forEach>
     </tbody>

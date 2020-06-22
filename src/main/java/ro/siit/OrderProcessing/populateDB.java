@@ -47,6 +47,7 @@ public class populateDB extends HttpServlet {
             String email = order.getBilling().getEmail();
             String Observatii = order.getCustomer_note();
             int valoareProduse = order.getTotal() - order.getShipping_total();
+            int valoareLivrare = order.getShipping_total();
             String Status = "";
             String incasat = String.valueOf(valoareProduse);
             String state = "pending";
@@ -71,11 +72,11 @@ public class populateDB extends HttpServlet {
                 PreparedStatement ps;
                 if ((Produse.contains("Bilet virtual") && Produse.length() < 90) || (Produse.contains("Cutia virtual") && Produse.length() < 90)) {
                     ps = connection.prepareStatement
-                            ("INSERT INTO produsevirtuale (status, nr, cod_comanda, data_comanda, client, produse, adresa, localitate,cod_postal, tara, telefon, email, observatii, valoare_produse, incasat, state) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                            ("INSERT INTO produsevirtuale (status, nr, cod_comanda, data_comanda, client, produse, adresa, localitate,cod_postal, tara, telefon, email, observatii, valoare_produse, incasat, state, cost_transport) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
                 } else {
                     ps = connection.prepareStatement
-                            ("INSERT INTO poliorders (status, nr, cod_comanda, data_comanda, client, produse, adresa, localitate,cod_postal, tara, telefon, email, observatii, valoare_produse, incasat, state) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                            ("INSERT INTO poliorders (status, nr, cod_comanda, data_comanda, client, produse, adresa, localitate,cod_postal, tara, telefon, email, observatii, valoare_produse, incasat, state, cost_transport) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
                 }
                 ps.setString(1, Status);
@@ -94,6 +95,7 @@ public class populateDB extends HttpServlet {
                 ps.setInt(14, valoareProduse);
                 ps.setString(15, incasat);
                 ps.setString(16, state);
+                ps.setString(17, String.valueOf(valoareLivrare));
                 ps.executeUpdate();
                 ps.close();
             } catch (SQLException | ClassNotFoundException e) {
