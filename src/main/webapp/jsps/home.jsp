@@ -23,6 +23,7 @@
                         <a class="dropdown-item" href="#" id="plataCash">Plata Cash</a>
                         <a class="dropdown-item" href="#" id="plataCard">Plata Card</a>
                         <a class="dropdown-item" href="#" id="plataBanca">Plata Banca</a>
+                        <a class="dropdown-item" href="#" id="incasariTotale">Incasari Totale</a>
                     </div>
                 </div>
                 <button class="btn btn-outline-success" type="submit" id="seeVirtualOrders">Vezi comenzi produse
@@ -72,6 +73,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
+<script src="//cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
 
 <body>
 <div id="tableDiv">
@@ -117,12 +119,17 @@
     $("#plataBanca").click(function () {
         getTable("showBankOrders");
     })
-    $("#xls").click(download);
-
-    let currentURL = "showAllOrders";
+    $("#xls").click(function () {
+        $("#tableDiv").table2excel({
+            exclude: ".noExl",
+            filename: "SituatieLunara.xls"
+        });
+    });
+    $("#incasariTotale").click(function () {
+        getTable("showTotalRevenue");
+    })
 
     function getTable(url) {
-        currentURL = url;
         $("#tableDiv").html("Loading...");
         $.ajax({
             type: "GET",
@@ -140,25 +147,6 @@
             }
         });
 
-    }
-    function download(){
-        $("#tableDiv").html("Loading...");
-        $.ajax({
-            type: "GET",
-            url: "https://polishoporders.herokuapp.com/exportXLS",
-            contentType: "application/json",
-            success: function (data) {
-                if(data === "NOT_FOUND")
-                    alert("Codul cautat nu a fost gasit");
-                else {
-                    $("#tableDiv").html(data);
-                }
-            },
-            error: function () {
-                $("#tableDiv").html("A aparut o eroare. Reincercati");
-            }
-        });
-        /*window.location = "https://polishoporders.herokuapp.com/" + currentURL;*/
     }
 
 </script>

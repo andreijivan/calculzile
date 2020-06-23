@@ -336,4 +336,30 @@ public class OrderService {
         }
     }
 
+    public List<DisplayedOrder> getTotalRevenue() {
+        List<DisplayedOrder> totalRevenueOrders = new ArrayList<>();
+        try {
+            Class.forName("org.postgresql.Driver");
+            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM comenzifinalizatecash");
+            displayOrderList(totalRevenueOrders, ps);
+            ps.close();
+            PreparedStatement qs = connection.prepareStatement("SELECT * FROM comenzifinalizatecard");
+            displayOrderList(totalRevenueOrders, qs);
+            qs.close();
+            PreparedStatement zs = connection.prepareStatement("SELECT * FROM comenzifinalizatebanca");
+            displayOrderList(totalRevenueOrders, zs);
+            zs.close();
+        } catch (SQLException | ClassNotFoundException throwable) {
+            throwable.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (Exception e) { /* ignored */ }
+        }
+
+        totalRevenueOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
+        return totalRevenueOrders;
+    }
+
 }
