@@ -255,6 +255,14 @@ public class OrderService {
                         rs.getString(11), rs.getString(12), rs.getString(13), rs.getInt(14),
                         rs.getString(15), rs.getString(16), rs.getString(17));
             }
+            else{
+                List<DisplayedOrder> totalOrders = new OrderService().getTotalRevenue();
+                for (DisplayedOrder order: totalOrders){
+                    if (order.getCodComanda() == codComanda){
+                    return order;
+                    }
+                }
+            }
         } catch (Exception throwable) {
             throwable.printStackTrace();
         } finally {

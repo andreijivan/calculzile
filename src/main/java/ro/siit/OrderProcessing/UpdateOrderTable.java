@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-@WebServlet(urlPatterns = {"/updateOrderTables"})
+@WebServlet(urlPatterns = {"/updateOrderTable"})
 public class UpdateOrderTable extends HttpServlet {
 
     OrderService orderService = new OrderService();

@@ -51,7 +51,7 @@
             <td><c:out value="${order.codComanda}"/></td>
             <td><c:out value="${order.dataComanda}"/></td>
             <td><c:out value="${order.client}"/></td>
-            <td id="produse"><c:out value="${order.produse}"/></td>
+            <td class="produse" data-cod_produse="${order.produse}"><c:out value="${order.produse}"/></td>
             <td><c:out value="${order.adresa}"/></td>
             <td><c:out value="${order.localitate}"/></td>
             <td><c:out value="${order.codPostal}"/></td>
@@ -67,12 +67,31 @@
     </tbody>
 </table>
 
+<div class="modal fade" id="modifyTableCells" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Modifica</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id ="modalID">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-success" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-success">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     $(".butonFinalizat").click(function () {
         let codComanda = $(this).data("cod_comanda");
         $.ajax({
             type: "POST",
-            url: "https://polishoporders.herokuapp.com/updateOrderTables",
+            url: "https://polishoporders.herokuapp.com/updateOrderTable",
             contentType: "application/json",
             data: {
                 "codComanda": codComanda
@@ -139,6 +158,16 @@
                 $("#tableDiv").html("A aparut o eroare. Reincercati");
             }
         });
+    })
+    $("#modifyTableCells").on('shown.bs.modal', function () {
+        console.log();
+
+    })
+    $(".produse").dblclick(function () {
+        let codComanda = $(this).data("cod_comanda");
+        let produse = $(this).data("cod_produse");
+        $("#modalID").val(produse);
+        $("#modifyTableCells").modal("show");
     })
 </script>
 <script>

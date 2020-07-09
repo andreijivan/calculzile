@@ -1,6 +1,7 @@
-package ro.siit.OrderProcessing;
+package ro.siit.OrderProcessing.FinalizedOrdersSort;
 
 import ro.siit.OrderDetails.DisplayedOrder;
+import ro.siit.OrderProcessing.OrderService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

@@ -24,9 +24,17 @@ public class SearchOrder extends HttpServlet {
         List<DisplayedOrder> foundOrder = new ArrayList<>();
         DisplayedOrder searchedOrder = orderService.orderExists(Integer.parseInt(searchValue));
         if ( searchedOrder != null){
-            foundOrder.add(searchedOrder);
-            req.setAttribute("orders",foundOrder);
-            req.getRequestDispatcher("/jsps/table.jsp").forward(req,resp);
+            if (searchedOrder.getState().equals("pending")){
+                foundOrder.add(searchedOrder);
+                req.setAttribute("orders",foundOrder);
+                req.getRequestDispatcher("/jsps/table.jsp").forward(req,resp);
+            }
+            else{
+                foundOrder.add(searchedOrder);
+                req.setAttribute("orders",foundOrder);
+                req.getRequestDispatcher("/jsps/totalRevenueTable.jsp").forward(req,resp);
+            }
+
         }
         else {
             PrintWriter writer = resp.getWriter();
