@@ -121,7 +121,6 @@
     })
     $("#xls").click(function () {
         $("#tableDiv").table2excel({
-            exclude: ".noExl",
             filename: "SituatieLunara.xls"
         });
     });
