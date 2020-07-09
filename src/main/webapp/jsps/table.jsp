@@ -51,7 +51,7 @@
             <td><c:out value="${order.codComanda}"/></td>
             <td><c:out value="${order.dataComanda}"/></td>
             <td><c:out value="${order.client}"/></td>
-            <td><c:out value="${order.produse}"/></td>
+            <td id="produse" ondblclick="modifyProduseCell(this)"><c:out value="${order.produse}"/></td>
             <td><c:out value="${order.adresa}"/></td>
             <td><c:out value="${order.localitate}"/></td>
             <td><c:out value="${order.codPostal}"/></td>
