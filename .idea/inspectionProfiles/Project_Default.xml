@@ -1398,8 +1398,21 @@
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="1">
+          <list size="14">
             <item index="0" class="java.lang.String" itemvalue="css-style:" />
+            <item index="1" class="java.lang.String" itemvalue="clientemail" />
+            <item index="2" class="java.lang.String" itemvalue="clientname" />
+            <item index="3" class="java.lang.String" itemvalue="clientaddress" />
+            <item index="4" class="java.lang.String" itemvalue="clienttotalpaid" />
+            <item index="5" class="java.lang.String" itemvalue="clientshippingcost" />
+            <item index="6" class="java.lang.String" itemvalue="clientobs" />
+            <item index="7" class="java.lang.String" itemvalue="clientcountry" />
+            <item index="8" class="java.lang.String" itemvalue="clientphone" />
+            <item index="9" class="java.lang.String" itemvalue="clientproductsvalue" />
+            <item index="10" class="java.lang.String" itemvalue="clientcity" />
+            <item index="11" class="java.lang.String" itemvalue="clientpostalcode" />
+            <item index="12" class="java.lang.String" itemvalue="clientproducts" />
+            <item index="13" class="java.lang.String" itemvalue="input" />
           </list>
         </value>
       </option>

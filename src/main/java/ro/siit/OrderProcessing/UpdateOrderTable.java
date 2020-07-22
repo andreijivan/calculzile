@@ -35,12 +35,17 @@ public class UpdateOrderTable extends HttpServlet {
             try {
                 Class.forName("org.postgresql.Driver");
                 connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+                PreparedStatement qs = connection.prepareStatement
+                        ("UPDATE poliorders SET state = 'livrat' WHERE cod_comanda = ?");
+                qs.setInt(1, codComandaFinalized);
+                qs.executeUpdate();
+                qs.close();
+
                 PreparedStatement ps = connection.prepareStatement
                         ("INSERT INTO comenzifinalizatecard SELECT * from poliorders WHERE cod_comanda = ?");
                 ps.setInt(1, codComandaFinalized);
                 ps.executeUpdate();
                 ps.close();
-
             } catch (ClassNotFoundException | SQLException e) {
                 e.printStackTrace();
             }finally {
@@ -56,7 +61,11 @@ public class UpdateOrderTable extends HttpServlet {
             try {
                 Class.forName("org.postgresql.Driver");
                 connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
-
+                PreparedStatement qs = connection.prepareStatement
+                        ("UPDATE poliorders SET state = 'livrat' WHERE cod_comanda = ?");
+                qs.setInt(1, codComandaFinalized);
+                qs.executeUpdate();
+                qs.close();
                 PreparedStatement ps = connection.prepareStatement
                         ("INSERT INTO comenzifinalizatecash SELECT * from poliorders WHERE cod_comanda = ?");
                 ps.setInt(1, codComandaFinalized);
@@ -85,7 +94,11 @@ public class UpdateOrderTable extends HttpServlet {
         try {
             Class.forName("org.postgresql.Driver");
              connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
-
+            PreparedStatement qs = connection.prepareStatement
+                    ("UPDATE poliorders SET state = 'livrat' WHERE cod_comanda = ?");
+            qs.setInt(1, codComandaFinalized);
+            qs.executeUpdate();
+            qs.close();
             PreparedStatement ps = connection.prepareStatement
                     ("INSERT INTO comenzifinalizatebanca SELECT * from poliorders WHERE cod_comanda = ?");
             ps.setInt(1, codComandaFinalized);

@@ -17,9 +17,7 @@ import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = {"/populateDB"})
 public class populateDB extends HttpServlet {
-    /*      @Override
-       protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-          }*/
+
     private Connection connection;
 
     @Override
@@ -54,6 +52,9 @@ public class populateDB extends HttpServlet {
 
             if (order.getPayment_method_title().equals("Plata cu cardul / Card payment") || order.getPayment_method_title().equals("Plata cu cardul")) {
                 Status = "Achitat online CARD. De expediat. *Create AWB*";
+                if (order.getShipping_lines()[0].getMethod_title().equals("Ridicare personală de la depozitul magazinului (fără cost de transport)")){
+                    Status ="Achitat online CARD. Ridicare personala depozit";
+                }
             } else if (order.getPayment_method_title().equals("Transfer bancar (ordin de plată) / Direct bank transfer")) {
                 Status = "Achitat online TRANSFER BANCAR. De asteptat confirmare banca. De expediat. *Create AWB*";
             }

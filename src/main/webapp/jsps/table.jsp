@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css"/>
 <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<jsp:include page="EditForm.jsp"/>
 
 <table class="table table-hover" style="width: 100%">
     <thead>
@@ -39,19 +40,39 @@
                         data-cod_comanda="${order.codComanda}">Anulat
                 </button>
                 <button class="btn btn-outline-success butonPregatit"
-<c:if test="${order.state eq 'pregatit'}">style="color: white; border-color: rebeccapurple; background-color: rebeccapurple;"</c:if>
- input type="checkbox" data-toggle="toggle" data-cod_comanda="${order.codComanda}">Pregatit</button>
+                        <c:if test="${order.state eq 'pregatit'}">style="color: white; border-color: rebeccapurple; background-color: rebeccapurple;"</c:if>
+                        input type="checkbox" data-toggle="toggle" data-cod_comanda="${order.codComanda}">Pregatit
+                </button>
 
                 <button class="btn btn-outline-success butonLivrat"
-<c:if test="${order.state eq 'livrat'}">style="color: white; border-color: rebeccapurple; background-color: rebeccapurple;"</c:if>
-                    input type="checkbox" data-toggle="toggle" data-cod_comanda="${order.codComanda}">Livrat</button>
+                        <c:if test="${order.state eq 'livrat'}">style="color: white; border-color: rebeccapurple; background-color: rebeccapurple;"</c:if>
+                        input type="checkbox" data-toggle="toggle" data-cod_comanda="${order.codComanda}">Livrat
+                </button>
 
+                <a href="" class="btn btn-outline-success butonEdit" type="submit"
+                   data-cod_comanda="${order.codComanda}" data-toggle="modal" data-target="#modalEditForm"
+                   clientOrderNumber="${order.codComanda}"
+                   clientOrderDate="${order.dataComanda}"
+                   clientStatus="${order.status}"
+                   clientName="${order.client}"
+                   clientProducts="${order.produse}"
+                   clientAddress="${order.adresa}"
+                   clientCity="${order.localitate}"
+                   clientPostalCode="${order.codPostal}"
+                   clientCountry="${order.tara}"
+                   clientPhone="${order.telefon}"
+                   clientEmail="${order.email}"
+                   clientObs="${order.observatii}"
+                   clientProductsValue="${order.valoareProduse}"
+                   clientTotalPaid="${order.incasat}"
+                   clientShippingCost="${order.valoareLivrare}">Edit
+                </a>
 
             </td>
             <td><c:out value="${order.codComanda}"/></td>
             <td><c:out value="${order.dataComanda}"/></td>
             <td><c:out value="${order.client}"/></td>
-            <td class="produse" data-cod_produse="${order.produse}"><c:out value="${order.produse}"/></td>
+            <td><c:out value="${order.produse}"/></td>
             <td><c:out value="${order.adresa}"/></td>
             <td><c:out value="${order.localitate}"/></td>
             <td><c:out value="${order.codPostal}"/></td>
@@ -67,25 +88,6 @@
     </tbody>
 </table>
 
-<div class="modal fade" id="modifyTableCells" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Modifica</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <input type="text" id ="modalID">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-success" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-outline-success">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
 <script>
     $(".butonFinalizat").click(function () {
         let codComanda = $(this).data("cod_comanda");
@@ -159,17 +161,44 @@
             }
         });
     })
-    $("#modifyTableCells").on('shown.bs.modal', function () {
-        console.log();
-
-    })
-    $(".produse").dblclick(function () {
-        let codComanda = $(this).data("cod_comanda");
-        let produse = $(this).data("cod_produse");
-        $("#modalID").val(produse);
-        $("#modifyTableCells").modal("show");
-    })
 </script>
 <script>
     $("#noOfOrders").html("${fn:length(orders)}")
+</script>
+
+<script>
+    $('#modalEditForm').on('show.bs.modal', function (e) {
+        let opener = e.relatedTarget;
+        let clientStatus = $(opener).attr('clientStatus');
+        let clientOrderNumber = $(opener).attr('clientOrderNumber');
+        let clientOrderDate = $(opener).attr('clientOrderDate');
+        let clientName = $(opener).attr('clientName');
+        let clientProducts = $(opener).attr('clientProducts');
+        let clientAddress = $(opener).attr('clientAddress');
+        let clientCity = $(opener).attr('clientCity');
+        let clientPostalCode = $(opener).attr('clientPostalCode');
+        let clientCountry = $(opener).attr('clientCountry');
+        let clientPhone = $(opener).attr('clientPhone');
+        let clientEmail = $(opener).attr('clientEmail');
+        let clientObs = $(opener).attr('clientObs');
+        let clientProductsValue = $(opener).attr('clientProductsValue');
+        let clientTotalPaid = $(opener).attr('clientTotalPaid');
+        let clientShippingCost = $(opener).attr('clientShippingCost');
+
+        $('#modalEditForm').find('[id="statusClient"]').val(clientStatus);
+        $('#modalEditForm').find('[id="codComandaClient"]').val(clientOrderNumber);
+        $('#modalEditForm').find('[id="dataComandaClient"]').val(clientOrderDate);
+        $('#modalEditForm').find('[id="numeClient"]').val(clientName);
+        $('#modalEditForm').find('[id="produseClient"]').val(clientProducts);
+        $('#modalEditForm').find('[id="adresaClient"]').val(clientAddress);
+        $('#modalEditForm').find('[id="localitateClient"]').val(clientCity);
+        $('#modalEditForm').find('[id="codPostalClient"]').val(clientPostalCode);
+        $('#modalEditForm').find('[id="taraClient"]').val(clientCountry);
+        $('#modalEditForm').find('[id="telefonClient"]').val(clientPhone);
+        $('#modalEditForm').find('[id="emailClient"]').val(clientEmail);
+        $('#modalEditForm').find('[id="observatiiClient"]').val(clientObs);
+        $('#modalEditForm').find('[id="valoareProduseClient"]').val(clientProductsValue);
+        $('#modalEditForm').find('[id="incasatClient"]').val(clientTotalPaid);
+        $('#modalEditForm').find('[id="costLivrareClient"]').val(clientShippingCost);
+    });
 </script>
