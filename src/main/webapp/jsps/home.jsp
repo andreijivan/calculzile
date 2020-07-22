@@ -61,7 +61,7 @@
 
             </ul>
             <div class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="number" placeholder="Search Cod comanda" aria-label="Search" name="searchOrder" id="searchInputElement">
+                <input class="form-control mr-sm-2" type="text" placeholder="Search Cod comanda" aria-label="Search" name="searchOrder" id="searchInputElement">
                 <button class="btn btn-outline-success" type="button" id="searchButton">Search</button>
             </div>
         </div>

@@ -20,11 +20,14 @@ public class SearchOrder extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String searchValue = req.getParameter("searchValue");
-        //System.out.println("Search value is " + searchValue);
         List<DisplayedOrder> foundOrder = new ArrayList<>();
-        DisplayedOrder searchedOrder = orderService.orderExists(Integer.parseInt(searchValue));
+        DisplayedOrder searchedOrder = orderService.orderExists(String.valueOf(searchValue));
+
         if ( searchedOrder != null){
-            if (searchedOrder.getState().equals("pending")){
+            foundOrder.add(searchedOrder);
+            req.setAttribute("orders",foundOrder);
+            req.getRequestDispatcher("/jsps/table.jsp").forward(req,resp);
+         /*   if (!searchedOrder.getState().equals("finalizat")){
                 foundOrder.add(searchedOrder);
                 req.setAttribute("orders",foundOrder);
                 req.getRequestDispatcher("/jsps/table.jsp").forward(req,resp);
@@ -33,7 +36,7 @@ public class SearchOrder extends HttpServlet {
                 foundOrder.add(searchedOrder);
                 req.setAttribute("orders",foundOrder);
                 req.getRequestDispatcher("/jsps/totalRevenueTable.jsp").forward(req,resp);
-            }
+            }*/
 
         }
         else {

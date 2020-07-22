@@ -27,7 +27,7 @@ public class DeleteOrder extends HttpServlet {
         String test = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         Scanner scanner = new Scanner(test).useDelimiter("[^0-9]+");
         int codComandaDelete = scanner.nextInt();
-        DisplayedOrder finalizedOrder = orderService.orderExists(codComandaDelete);
+        DisplayedOrder finalizedOrder = orderService.orderExists(String.valueOf(codComandaDelete));
         Connection connection = null;
 
         try {

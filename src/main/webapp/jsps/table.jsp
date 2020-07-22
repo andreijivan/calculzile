@@ -34,6 +34,7 @@
             <td><c:out value="${order.status}"/></td>
             <td>
                 <button class="btn btn-outline-success butonFinalizat" type="submit"
+                        <c:if test="${order.state eq 'finalizat'}">style="color: white; border-color: rebeccapurple; background-color: rebeccapurple;"</c:if>
                         data-cod_comanda="${order.codComanda}">Finalizat
                 </button>
                 <button class="btn btn-outline-success butonAnulat" type="submit"
@@ -174,6 +175,7 @@
         let clientOrderDate = $(opener).attr('clientOrderDate');
         let clientName = $(opener).attr('clientName');
         let clientProducts = $(opener).attr('clientProducts');
+        console.log(clientProducts);
         let clientAddress = $(opener).attr('clientAddress');
         let clientCity = $(opener).attr('clientCity');
         let clientPostalCode = $(opener).attr('clientPostalCode');

@@ -29,6 +29,10 @@
             <td><c:out value="${order.status}" /></td>
             <td>
                 <button class="btn btn-outline-success butonRevocare" type="submit" data-cod_comanda="${order.codComanda}">Revocare</button>
+                <button class="btn btn-outline-success Finalizat"
+                        <c:if test="${order.state eq 'finalizat'}">style="color: white; border-color: rebeccapurple; background-color: rebeccapurple;"</c:if>
+                        input type="checkbox" data-toggle="toggle" data-cod_comanda="${order.codComanda}">Finalizat
+                </button>
             </td>
             <td><c:out value="${order.codComanda}" /></td>
             <td><c:out value="${order.dataComanda}" /></td>

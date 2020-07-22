@@ -30,7 +30,7 @@ public class ModifyOrder extends HttpServlet {
          String test = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         Scanner scanner = new Scanner(test).useDelimiter("[^0-9]+");
         int codComandaModify = scanner.nextInt();
-        DisplayedOrder oldOrder = orderService.orderExists(codComandaModify);
+        DisplayedOrder oldOrder = orderService.orderExists(String.valueOf(codComandaModify));
         ObjectMapper objectMapper = new ObjectMapper();
         DisplayedOrder editedOrder = objectMapper.readValue(test, DisplayedOrder.class);
         editedOrder.setState(oldOrder.getState());

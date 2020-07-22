@@ -28,7 +28,7 @@ public class UpdateOrderTable extends HttpServlet {
         //System.out.println(test);
         Scanner scanner = new Scanner(test).useDelimiter("[^0-9]+");
         int codComandaFinalized = scanner.nextInt();
-        DisplayedOrder finalizedOrder = orderService.orderExists(codComandaFinalized);
+        DisplayedOrder finalizedOrder = orderService.orderExists(String.valueOf(codComandaFinalized));
 
         if (finalizedOrder.getStatus().contains("Achitat online CARD")) {
             Connection connection = null;
@@ -36,7 +36,7 @@ public class UpdateOrderTable extends HttpServlet {
                 Class.forName("org.postgresql.Driver");
                 connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
                 PreparedStatement qs = connection.prepareStatement
-                        ("UPDATE poliorders SET state = 'livrat' WHERE cod_comanda = ?");
+                        ("UPDATE poliorders SET state = 'finalizat' WHERE cod_comanda = ?");
                 qs.setInt(1, codComandaFinalized);
                 qs.executeUpdate();
                 qs.close();
@@ -62,7 +62,7 @@ public class UpdateOrderTable extends HttpServlet {
                 Class.forName("org.postgresql.Driver");
                 connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
                 PreparedStatement qs = connection.prepareStatement
-                        ("UPDATE poliorders SET state = 'livrat' WHERE cod_comanda = ?");
+                        ("UPDATE poliorders SET state = 'finalizat' WHERE cod_comanda = ?");
                 qs.setInt(1, codComandaFinalized);
                 qs.executeUpdate();
                 qs.close();
@@ -95,7 +95,7 @@ public class UpdateOrderTable extends HttpServlet {
             Class.forName("org.postgresql.Driver");
              connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
             PreparedStatement qs = connection.prepareStatement
-                    ("UPDATE poliorders SET state = 'livrat' WHERE cod_comanda = ?");
+                    ("UPDATE poliorders SET state = 'finalizat' WHERE cod_comanda = ?");
             qs.setInt(1, codComandaFinalized);
             qs.executeUpdate();
             qs.close();

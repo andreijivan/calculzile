@@ -31,6 +31,11 @@ public class RevokeFinalizedCashOrder extends HttpServlet {
         try {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+            PreparedStatement qs = connection.prepareStatement
+                    ("UPDATE comenzifinalizatecash SET state = 'pending' WHERE cod_comanda = ?");
+            qs.setInt(1, codComandaRevoked);
+            qs.executeUpdate();
+            qs.close();
             PreparedStatement ps = connection.prepareStatement
                     ("INSERT INTO poliorders SELECT * from comenzifinalizatecash WHERE cod_comanda = ?");
             ps.setInt(1, codComandaRevoked);

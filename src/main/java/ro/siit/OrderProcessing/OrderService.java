@@ -239,36 +239,67 @@ public class OrderService {
         return internationalOrders;
     }
 
-    public DisplayedOrder orderExists(int codComanda) {
-        try {
-            Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM poliorders WHERE cod_comanda = ?");
-            ps.setInt(1, codComanda);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                // System.out.println(rs.getInt(2));
+    public DisplayedOrder orderExists(String nameOrCode) {
+        if (nameOrCode.matches("[0-9]+")){
+            try {
+                Class.forName("org.postgresql.Driver");
+                connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+                PreparedStatement ps = connection.prepareStatement("SELECT * FROM poliorders WHERE cod_comanda = ?");
+                ps.setInt(1, Integer.parseInt(nameOrCode));
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
 
-                return new DisplayedOrder(rs.getString(1), rs.getInt(2), rs.getInt(3),
-                        rs.getString(4), rs.getString(5), rs.getString(6),
-                        rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10),
-                        rs.getString(11), rs.getString(12), rs.getString(13), rs.getInt(14),
-                        rs.getString(15), rs.getString(16), rs.getString(17));
-            }
-            else{
-                List<DisplayedOrder> totalOrders = new OrderService().getTotalRevenue();
-                for (DisplayedOrder order: totalOrders){
-                    if (order.getCodComanda() == codComanda){
-                    return order;
+                    return new DisplayedOrder(rs.getString(1), rs.getInt(2), rs.getInt(3),
+                            rs.getString(4), rs.getString(5), rs.getString(6),
+                            rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10),
+                            rs.getString(11), rs.getString(12), rs.getString(13), rs.getInt(14),
+                            rs.getString(15), rs.getString(16), rs.getString(17));
+                }
+                else{
+                    List<DisplayedOrder> totalOrders = new OrderService().getTotalRevenue();
+                    for (DisplayedOrder order: totalOrders){
+                        if (order.getCodComanda() == Integer.parseInt(nameOrCode)){
+                            return order;
+                        }
                     }
                 }
+            } catch (Exception throwable) {
+                throwable.printStackTrace();
+            } finally {
+                try {
+                    connection.close();
+                } catch (Exception e) { /* ignored */ }
             }
-        } catch (Exception throwable) {
-            throwable.printStackTrace();
-        } finally {
+        }
+        else{
             try {
-                connection.close();
-            } catch (Exception e) { /* ignored */ }
+                Class.forName("org.postgresql.Driver");
+                connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+                PreparedStatement qs = connection.prepareStatement("SELECT * FROM poliorders WHERE client LIKE ?");
+                qs.setString(1, "%" + nameOrCode + "%");
+                ResultSet rs = qs.executeQuery();
+                if (rs.next()) {
+                    return new DisplayedOrder(rs.getString(1), rs.getInt(2), rs.getInt(3),
+                            rs.getString(4), rs.getString(5), rs.getString(6),
+                            rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10),
+                            rs.getString(11), rs.getString(12), rs.getString(13), rs.getInt(14),
+                            rs.getString(15), rs.getString(16), rs.getString(17));
+                }
+                else{
+                    List<DisplayedOrder> totalOrders = new OrderService().getTotalRevenue();
+                    for (DisplayedOrder order: totalOrders){
+                        if (order.getClient().contains(nameOrCode)){
+                            return order;
+                        }
+                    }
+                }
+            } catch (Exception throwable) {
+                throwable.printStackTrace();
+            } finally {
+                try {
+                    connection.close();
+                } catch (Exception e) { /* ignored */ }
+            }
         }
         return null;
     }
