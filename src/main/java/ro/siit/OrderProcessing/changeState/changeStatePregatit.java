@@ -2,8 +2,6 @@ package ro.siit.OrderProcessing.changeState;
 
 import ro.siit.OrderDetails.DisplayedOrder;
 import ro.siit.OrderProcessing.OrderService;
-import ro.siit.OrderProcessing.UpdateOrderTable;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

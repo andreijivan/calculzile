@@ -50,7 +50,9 @@ public class ModifyOrder extends HttpServlet {
         } finally {
             try {
                 connection.close();
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                /* ignored */
+            }
         }
         try {
             Class.forName("org.postgresql.Driver");
@@ -83,7 +85,9 @@ public class ModifyOrder extends HttpServlet {
         } finally {
             try {
                 connection.close();
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                /* ignored */
+            }
             }
 
                 List<DisplayedOrder> totalOrders = orderService.getAllOrders();

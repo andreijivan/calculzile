@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 @WebServlet(urlPatterns = {"/showCashOrders"})
@@ -17,7 +18,12 @@ public class ShowCashOrders extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        List<DisplayedOrder> totalOrders = orderService.displayFinalizedCashOrders();
+        List<DisplayedOrder> totalOrders = null;
+        try {
+            totalOrders = orderService.displayFinalizedCashOrders();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         req.setAttribute("orders",totalOrders);
         req.setAttribute("noOfOrders", totalOrders.size());
         req.getRequestDispatcher("/jsps/finalizedCashTable.jsp").forward(req,resp);

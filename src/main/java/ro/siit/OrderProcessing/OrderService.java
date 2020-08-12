@@ -3,9 +3,10 @@ package ro.siit.OrderProcessing;
 import ro.siit.OrderDetails.DisplayedOrder;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.Date;
 
 public class OrderService {
 
@@ -32,7 +33,7 @@ public class OrderService {
         return orders;
     }
 
-    public List<DisplayedOrder> displayFinalizedCashOrders() {
+    public List<DisplayedOrder> displayFinalizedCashOrders() throws ParseException {
         List<DisplayedOrder> finalizedCashOrders = new ArrayList<>();
         try {
             Class.forName("org.postgresql.Driver");
@@ -47,27 +48,80 @@ public class OrderService {
                 connection.close();
             } catch (Exception e) { /* ignored */ }
         }
-        finalizedCashOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
-        return finalizedCashOrders;
-    }
-
-    public List<DisplayedOrder> displayFinalizedBankOrders() {
-        List<DisplayedOrder> finalizedBankOrders = new ArrayList<>();
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH,-2);
+        Date compareDate = cal.getTime();
         try {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM comenzifinalizatebanca");
-
-            displayOrderList(finalizedBankOrders, ps);
-
-            ps.close();
-        } catch (SQLException | ClassNotFoundException throwable) {
+            for (DisplayedOrder archivedOrder : finalizedCashOrders) {
+                Date archiveDate = new SimpleDateFormat("yyyy-MM-dd").parse(archivedOrder.getDataComanda());
+                if (archiveDate.compareTo(compareDate) < 0) {
+                    PreparedStatement qs = connection.prepareStatement("INSERT INTO arhiva SELECT * from comenzifinalizatecash WHERE cod_comanda = ?");
+                    qs.setInt(1, archivedOrder.getCodComanda());
+                    qs.executeUpdate();
+                    qs.close();
+                    PreparedStatement zs = connection.prepareStatement("DELETE FROM comenzifinalizatecash WHERE cod_comanda = ?");
+                    zs.setInt(1, archivedOrder.getCodComanda());
+                    zs.executeUpdate();
+                    zs.close();
+                }
+            }
+        }
+        catch (SQLException | ClassNotFoundException throwable) {
             throwable.printStackTrace();
         } finally {
             try {
                 connection.close();
             } catch (Exception e) { /* ignored */ }
         }
+        finalizedCashOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
+        return finalizedCashOrders;
+    }
+
+    public List<DisplayedOrder> displayFinalizedBankOrders() throws ParseException {
+        List<DisplayedOrder> finalizedBankOrders = new ArrayList<>();
+        try {
+            Class.forName("org.postgresql.Driver");
+            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM comenzifinalizatebanca");
+            displayOrderList(finalizedBankOrders, ps);
+            ps.close();
+        } catch (SQLException | ClassNotFoundException throwable) {
+            throwable.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (Exception e) {  /* ignored */  }
+        }
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH,-2);
+        Date compareDate = cal.getTime();
+                try {
+                    Class.forName("org.postgresql.Driver");
+                    connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+                    for (DisplayedOrder archivedOrder : finalizedBankOrders) {
+                        Date archiveDate = new SimpleDateFormat("yyyy-MM-dd").parse(archivedOrder.getDataComanda());
+                        if (archiveDate.compareTo(compareDate) < 0) {
+                            PreparedStatement qs = connection.prepareStatement("INSERT INTO arhiva SELECT * from comenzifinalizatebanca WHERE cod_comanda = ?");
+                            qs.setInt(1, archivedOrder.getCodComanda());
+                            qs.executeUpdate();
+                            qs.close();
+                            PreparedStatement zs = connection.prepareStatement("DELETE FROM comenzifinalizatebanca WHERE cod_comanda = ?");
+                            zs.setInt(1, archivedOrder.getCodComanda());
+                            zs.executeUpdate();
+                            zs.close();
+                        }
+                    }
+                }
+                    catch (SQLException | ClassNotFoundException throwable) {
+                        throwable.printStackTrace();
+                    } finally {
+                        try {
+                            connection.close();
+                        } catch (Exception e) { /* ignored */ }
+                    }
+
         finalizedBankOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
         return finalizedBankOrders;
     }
@@ -81,6 +135,33 @@ public class OrderService {
             displayOrderList(finalizedCardOrders, ps);
             ps.close();
         } catch (Exception throwable) {
+            throwable.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (Exception e) { /* ignored */ }
+        }
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH,-2);
+        Date compareDate = cal.getTime();
+        try {
+            Class.forName("org.postgresql.Driver");
+            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+            for (DisplayedOrder archivedOrder : finalizedCardOrders) {
+                Date archiveDate = new SimpleDateFormat("yyyy-MM-dd").parse(archivedOrder.getDataComanda());
+                if (archiveDate.compareTo(compareDate) < 0) {
+                    PreparedStatement qs = connection.prepareStatement("INSERT INTO arhiva SELECT * from comenzifinalizatecard WHERE cod_comanda = ?");
+                    qs.setInt(1, archivedOrder.getCodComanda());
+                    qs.executeUpdate();
+                    qs.close();
+                    PreparedStatement zs = connection.prepareStatement("DELETE FROM comenzifinalizatecard WHERE cod_comanda = ?");
+                    zs.setInt(1, archivedOrder.getCodComanda());
+                    zs.executeUpdate();
+                    zs.close();
+                }
+            }
+        }
+        catch (SQLException | ClassNotFoundException | ParseException throwable) {
             throwable.printStackTrace();
         } finally {
             try {
@@ -325,6 +406,28 @@ public class OrderService {
         return deletedOrders;
     }
 
+    public List<DisplayedOrder> getArchive(){
+        List<DisplayedOrder> archivedOrders = new ArrayList<>();
+
+        try {
+            Class.forName("org.postgresql.Driver");
+            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM arhiva");
+            ResultSet rs = ps.executeQuery();
+
+            prepareDisplayedOrder(archivedOrders, ps, rs);
+
+        } catch (Exception throwable) {
+            throwable.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (Exception e) { /* ignored */ }
+        }
+        archivedOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
+        return archivedOrders;
+    }
+
     private void prepareDisplayedOrder(List<DisplayedOrder> orders, PreparedStatement ps, ResultSet rs) throws SQLException {
         while (rs.next()) {
             String status = rs.getString(1);
@@ -396,7 +499,6 @@ public class OrderService {
                 connection.close();
             } catch (Exception e) { /* ignored */ }
         }
-
         totalRevenueOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
         return totalRevenueOrders;
     }

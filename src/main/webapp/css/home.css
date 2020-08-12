@@ -1,13 +1,14 @@
 table {
     width: 100%;
     border: 1px solid #000;
+    table-layout: auto;
 }
-th.Produse {
+/*th.Produse {
     width:20%
 }
 th.Email {
     width:8%
-}
+}*/
 
 
 th {

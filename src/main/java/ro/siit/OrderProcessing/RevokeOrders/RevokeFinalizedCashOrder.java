@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -59,7 +60,12 @@ public class RevokeFinalizedCashOrder extends HttpServlet {
         } finally {
             try { connection.close(); } catch (Exception e) { /* ignored */ }
         }
-        List<DisplayedOrder> totalOrders = orderService.displayFinalizedCashOrders();
+        List<DisplayedOrder> totalOrders = null;
+        try {
+            totalOrders = orderService.displayFinalizedCashOrders();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         req.setAttribute("orders",totalOrders);
         req.getRequestDispatcher("/jsps/finalizedCashTable.jsp").forward(req,resp);
     }

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css"/>
+
     <title>Poli Orders</title>
     <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#" id="totalOrders" ><span id="noOfOrders">0</span> comenzi</a>
@@ -16,15 +17,15 @@
                 <button class="btn btn-outline-success" type="submit" id="seeAllOrders">Vezi toate comenzile</button>
                 <div class="dropdown">
                     <button class="btn btn-outline-success dropdown-toggle" type="button" id="dropdownFinalizedButton"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Vezi comenzi finalizate
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        Vezi comenzi finalizate<span class="caret"></span>
                     </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="#" id="plataCash">Plata Cash</a>
-                        <a class="dropdown-item" href="#" id="plataCard">Plata Card</a>
-                        <a class="dropdown-item" href="#" id="plataBanca">Plata Banca</a>
-                        <a class="dropdown-item" href="#" id="incasariTotale">Incasari Totale</a>
-                    </div>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item" href="#" id="plataCash" data-value="Plata Cash">Plata Cash</a></li>
+                        <li><a class="dropdown-item" href="#" id="plataCard" data-value="Plata Card">Plata Card</a></li>
+                        <li><a class="dropdown-item" href="#" id="plataBanca" data-value="Plata Banca">Plata Banca</a></li>
+                        <li><a class="dropdown-item" href="#" id="incasariTotale" data-value="Incasari Totale">Incasari Totale</a></li>
+                    </ul>
                 </div>
                 <button class="btn btn-outline-success" type="submit" id="seeVirtualOrders">Vezi comenzi produse
                     virtuale
@@ -37,20 +38,21 @@
                         Exporta
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="#" id="xls">XLS</a>
-                        <a class="dropdown-item" href="#" id="pdf">PDF</a>
+                        <a class="dropdown-item" href="#" id="xls">XLSX</a>
+                        <a class="dropdown-item" href="#" id="Centralizator incasari lunare">Centralizator</a>
                     </div>
                 </div>
                 <div class="dropdown">
-                    <button class="btn btn-outline-success dropdown-toggle" type="button" id="dropdownSortButton"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button class="btn btn-outline-success dropdown-toggle" type="button" aria-haspopup="true" aria-expanded="true"
+                            data-toggle="dropdown" id="dropdownSortButton">
                         Sorteaza
+                        <span class="caret"></span>
                     </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="#" id="seeLocalOrders">Comenzi locale</a>
-                        <a class="dropdown-item" href="#" id="seeNationalOrders">Comenzi nationale</a>
-                        <a class="dropdown-item" href="#" id="seeInternationalOrders">Comenzi internationale</a>
-                    </div>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                       <li><a class="dropdown-item" href="#" id="seeLocalOrders" data-value="Comenzi locale">Comenzi locale</a></li>
+                       <li><a class="dropdown-item" href="#" id="seeNationalOrders" data-value="Comenzi nationale">Comenzi nationale</a></li>
+                       <li><a class="dropdown-item" href="#" id="seeInternationalOrders" data-value="Comenzi internationale">Comenzi internationale</a></li>
+                    </ul>
                 </div>
 
                 <a href="${pageContext.request.contextPath}/logout">
@@ -67,6 +69,7 @@
         </div>
     </nav>
 </head>
+
 <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
         crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
@@ -124,12 +127,16 @@
     })
     $("#xls").click(function () {
         $("#tableDiv").table2excel({
-            filename: "SituatieLunara.xls"
+            filename: "SituatieLunara.xlsx"
         });
     });
     $("#incasariTotale").click(function () {
         getTable("showTotalRevenue");
     })
+    $("#seeArchivedOrders").click(function () {
+        getTable("showArchive");
+    })
+
 
     function getTable(url) {
         $("#tableDiv").html("Loading...");
@@ -150,6 +157,14 @@
         });
 
     }
+
+</script>
+<script>
+    $(".dropdown-menu li a").click(function(){
+        $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+        $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+    });
+
 
 </script>
 

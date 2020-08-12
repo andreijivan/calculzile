@@ -2,7 +2,6 @@ package ro.siit.OrderProcessing.RevokeOrders;
 
 import ro.siit.OrderDetails.DisplayedOrder;
 import ro.siit.OrderProcessing.OrderService;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,6 +12,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -61,7 +61,12 @@ public class RevokeFinalizedBankOrder extends HttpServlet {
         }finally {
             try { connection.close(); } catch (Exception e) { /* ignored */ }
         }
-        List<DisplayedOrder> totalOrders = orderService.displayFinalizedBankOrders();
+        List<DisplayedOrder> totalOrders = null;
+        try {
+            totalOrders = orderService.displayFinalizedBankOrders();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         req.setAttribute("orders",totalOrders);
         req.getRequestDispatcher("/jsps/finalizedBankTable.jsp").forward(req,resp);
     }

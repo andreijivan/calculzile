@@ -56,7 +56,7 @@
                    clientOrderDate="${order.dataComanda}"
                    clientStatus="${order.status}"
                    clientName="${order.client}"
-                   clientProducts="${order.produse}"
+                   clientProducts="${fn:escapeXml(order.produse)}"
                    clientAddress="${order.adresa}"
                    clientCity="${order.localitate}"
                    clientPostalCode="${order.codPostal}"
@@ -170,37 +170,21 @@
 <script>
     $('#modalEditForm').on('show.bs.modal', function (e) {
         let opener = e.relatedTarget;
-        let clientStatus = $(opener).attr('clientStatus');
-        let clientOrderNumber = $(opener).attr('clientOrderNumber');
-        let clientOrderDate = $(opener).attr('clientOrderDate');
-        let clientName = $(opener).attr('clientName');
-        let clientProducts = $(opener).attr('clientProducts');
-        console.log(clientProducts);
-        let clientAddress = $(opener).attr('clientAddress');
-        let clientCity = $(opener).attr('clientCity');
-        let clientPostalCode = $(opener).attr('clientPostalCode');
-        let clientCountry = $(opener).attr('clientCountry');
-        let clientPhone = $(opener).attr('clientPhone');
-        let clientEmail = $(opener).attr('clientEmail');
-        let clientObs = $(opener).attr('clientObs');
-        let clientProductsValue = $(opener).attr('clientProductsValue');
-        let clientTotalPaid = $(opener).attr('clientTotalPaid');
-        let clientShippingCost = $(opener).attr('clientShippingCost');
-
-        $('#modalEditForm').find('[id="statusClient"]').val(clientStatus);
-        $('#modalEditForm').find('[id="codComandaClient"]').val(clientOrderNumber);
-        $('#modalEditForm').find('[id="dataComandaClient"]').val(clientOrderDate);
-        $('#modalEditForm').find('[id="numeClient"]').val(clientName);
-        $('#modalEditForm').find('[id="produseClient"]').val(clientProducts);
-        $('#modalEditForm').find('[id="adresaClient"]').val(clientAddress);
-        $('#modalEditForm').find('[id="localitateClient"]').val(clientCity);
-        $('#modalEditForm').find('[id="codPostalClient"]').val(clientPostalCode);
-        $('#modalEditForm').find('[id="taraClient"]').val(clientCountry);
-        $('#modalEditForm').find('[id="telefonClient"]').val(clientPhone);
-        $('#modalEditForm').find('[id="emailClient"]').val(clientEmail);
-        $('#modalEditForm').find('[id="observatiiClient"]').val(clientObs);
-        $('#modalEditForm').find('[id="valoareProduseClient"]').val(clientProductsValue);
-        $('#modalEditForm').find('[id="incasatClient"]').val(clientTotalPaid);
-        $('#modalEditForm').find('[id="costLivrareClient"]').val(clientShippingCost);
+        $('#modalEditForm').find('[id="statusClient"]').val($(opener).attr('clientStatus'));
+        $('#modalEditForm').find('[id="codComandaClient"]').val($(opener).attr('clientOrderNumber'));
+        $('#modalEditForm').find('[id="dataComandaClient"]').val($(opener).attr('clientOrderDate'));
+        $('#modalEditForm').find('[id="numeClient"]').val($(opener).attr('clientName'));
+        $('#modalEditForm').find('[id="produseClient"]').val($(opener).attr('clientProducts'));
+     /*   console.log($(opener).attr('clientProducts'));*/
+        $('#modalEditForm').find('[id="adresaClient"]').val($(opener).attr('clientAddress'));
+        $('#modalEditForm').find('[id="localitateClient"]').val($(opener).attr('clientCity'));
+        $('#modalEditForm').find('[id="codPostalClient"]').val($(opener).attr('clientPostalCode'));
+        $('#modalEditForm').find('[id="taraClient"]').val($(opener).attr('clientCountry'));
+        $('#modalEditForm').find('[id="telefonClient"]').val($(opener).attr('clientPhone'));
+        $('#modalEditForm').find('[id="emailClient"]').val($(opener).attr('clientEmail'));
+        $('#modalEditForm').find('[id="observatiiClient"]').val($(opener).attr('clientObs'));
+        $('#modalEditForm').find('[id="valoareProduseClient"]').val($(opener).attr('clientProductsValue'));
+        $('#modalEditForm').find('[id="incasatClient"]').val($(opener).attr('clientTotalPaid'));
+        $('#modalEditForm').find('[id="costLivrareClient"]').val($(opener).attr('clientShippingCost'));
     });
 </script>

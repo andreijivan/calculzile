@@ -26,67 +26,86 @@
             </div>
             <div class="modal-body mx-3">
                 <form id="modalForm33">
-
-                    <div class="md-form mb-5">
-                        <input type="text" id="statusClient" name="status" class="form-control validate">
-                        <label data-error="wrong" data-success="right">Status</label>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col">
+                                <label data-error="wrong" data-success="right">Status</label>
+                                <input type="text" id="statusClient" name="status" class="form-control validate">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label data-error="wrong" data-success="right">Cod Comanda</label>
+                                <input type="text" id="codComandaClient" name="codComanda" class="form-control validate">
+                            </div>
+                            <div class="col">
+                                <label data-error="wrong" data-success="right">Data Comanda</label>
+                                <input type="text" id="dataComandaClient" name="dataComanda" class="form-control validate">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label data-error="wrong" data-success="right">Client</label>
+                                <input type="text" id="numeClient" name="client" class="form-control validate">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label data-error="wrong" data-success="right">Produse</label>
+                                <input type="text" id="produseClient" name="produse" class="form-control validate">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label data-error="wrong" data-success="right">Adresa</label>
+                                <input type="text" id="adresaClient" name="adresa" class="form-control validate">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label data-error="wrong" data-success="right">Localitate</label>
+                                <input type="text" id="localitateClient" name="localitate" class="form-control validate">
+                            </div>
+                            <div class="col">
+                                <label data-error="wrong" data-success="right">Cod Postal</label>
+                                <input type="text" id="codPostalClient" name="codPostal" class="form-control validate">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label data-error="wrong" data-success="right">Tara</label>
+                                <input type="text" id="taraClient" name="tara" class="form-control validate">
+                            </div>
+                            <div class="col">
+                                <label data-error="wrong" data-success="right">Telefon</label>
+                                <input type="text" id="telefonClient" name="telefon" class="form-control validate">
+                            </div>
+                            <div class="col">
+                                <label data-error="wrong" data-success="right">Email</label>
+                                <input type="text" id="emailClient" name="email" class="form-control validate">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label data-error="wrong" data-success="right">Observatii</label>
+                                <input type="text" id="observatiiClient" name="observatii" class="form-control validate">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label data-error="wrong" data-success="right">Valoare Produse</label>
+                                <input type="text" id="valoareProduseClient" name="valoareProduse" class="form-control validate">
+                            </div>
+                            <div class="col">
+                                <label data-error="wrong" data-success="right">Incasat</label>
+                                <input type="text" id="incasatClient" name="incasat" class="form-control validate">
+                            </div>
+                            <div class="col">
+                                <label data-error="wrong" data-success="right">Cost Livrare</label>
+                                <input type="text" id="costLivrareClient" name="valoareLivrare" class="form-control validate">
+                            </div>
+                        </div>
                     </div>
-                    <div class="md-form mb-5">
-                        <input type="text" id="codComandaClient" name="codComanda" class="form-control validate">
-                        <label data-error="wrong" data-success="right">Cod Comanda</label>
-                    </div>
-                    <div class="md-form mb-5">
-                        <input type="text" id="dataComandaClient" name="dataComanda" class="form-control validate">
-                        <label data-error="wrong" data-success="right">Data Comanda</label>
-                    </div>
-                <div class="md-form mb-5">
-                    <input type="text" id="numeClient" name="client" class="form-control validate">
-                    <label data-error="wrong" data-success="right">Client</label>
-                </div>
-                <div class="md-form mb-5">
-                    <input type="text" id="produseClient" name="produse" class="form-control validate">
-                    <label data-error="wrong" data-success="right">Produse</label>
-                </div>
-                <div class="md-form mb-5">
-                    <input type="text" id="adresaClient" name="adresa" class="form-control validate">
-                    <label data-error="wrong" data-success="right">Adresa</label>
-                </div>
-                <div class="md-form mb-5">
-                    <input type="text" id="localitateClient" name="localitate" class="form-control validate">
-                    <label data-error="wrong" data-success="right">Localitate</label>
-                </div>
-                <div class="md-form mb-5">
-                    <input type="text" id="codPostalClient" name="codPostal" class="form-control validate">
-                    <label data-error="wrong" data-success="right">Cod Postal</label>
-                </div>
-                <div class="md-form mb-5">
-                    <input type="text" id="taraClient" name="tara" class="form-control validate">
-                    <label data-error="wrong" data-success="right">Tara</label>
-                </div>
-                <div class="md-form mb-5">
-                    <input type="text" id="telefonClient" name="telefon" class="form-control validate">
-                    <label data-error="wrong" data-success="right">Telefon</label>
-                </div>
-                <div class="md-form mb-5">
-                    <input type="text" id="emailClient" name="email" class="form-control validate">
-                    <label data-error="wrong" data-success="right">Email</label>
-                </div>
-                <div class="md-form mb-5">
-                    <input type="text" id="observatiiClient" name="observatii" class="form-control validate">
-                    <label data-error="wrong" data-success="right">Observatii</label>
-                </div>
-                <div class="md-form mb-5">
-                    <input type="text" id="valoareProduseClient" name="valoareProduse" class="form-control validate">
-                    <label data-error="wrong" data-success="right">Valoare Produse</label>
-                </div>
-                <div class="md-form mb-5">
-                    <input type="text" id="incasatClient" name="incasat" class="form-control validate">
-                    <label data-error="wrong" data-success="right">Incasat</label>
-                </div>
-                <div class="md-form mb-5">
-                    <input type="text" id="costLivrareClient" name="valoareLivrare" class="form-control validate">
-                    <label data-error="wrong" data-success="right">Cost Livrare</label>
-                </div>
                 </form>
             </div>
             <div class="modal-footer d-flex justify-content-center">
