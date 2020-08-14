@@ -1,5 +1,6 @@
-package ro.siit.ModifyOrder;
+package ro.siit.OrderProcessing.ModifyOrder;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ro.siit.OrderDetails.DisplayedOrder;
 import ro.siit.OrderProcessing.OrderService;
@@ -32,7 +33,9 @@ public class ModifyOrder extends HttpServlet {
         int codComandaModify = scanner.nextInt();
         DisplayedOrder oldOrder = orderService.orderExists(String.valueOf(codComandaModify));
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(JsonGenerator.Feature.ESCAPE_NON_ASCII,true);
         DisplayedOrder editedOrder = objectMapper.readValue(test, DisplayedOrder.class);
+        System.out.println(editedOrder.getProduse());
         editedOrder.setState(oldOrder.getState());
         Connection connection = null;
         try {
@@ -89,7 +92,6 @@ public class ModifyOrder extends HttpServlet {
                 /* ignored */
             }
             }
-
                 List<DisplayedOrder> totalOrders = orderService.getAllOrders();
                 req.setAttribute("orders", totalOrders);
                 req.getRequestDispatcher("/jsps/table.jsp").forward(req, resp);
