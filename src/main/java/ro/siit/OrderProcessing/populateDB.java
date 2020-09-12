@@ -52,7 +52,7 @@ public class populateDB extends HttpServlet {
 
             if (order.getPayment_method_title().equals("Plata cu cardul / Card payment") || order.getPayment_method_title().equals("Plata cu cardul")) {
                 Status = "Achitat online CARD. De expediat. *Create AWB*";
-                if (order.getShipping_lines()[0].getMethod_title().equals("Ridicare personală de la depozitul magazinului (fără cost de transport)")){
+                if (order.getShipping_lines().length>0 && order.getShipping_lines()[0].getMethod_title().equals("Ridicare personală de la depozitul magazinului (fără cost de transport)")){
                     Status ="Achitat online CARD. Ridicare personala depozit";
                 }
             } else if (order.getPayment_method_title().equals("Transfer bancar (ordin de plată) / Direct bank transfer")) {
@@ -72,6 +72,7 @@ public class populateDB extends HttpServlet {
                 connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
                 PreparedStatement ps;
                 if ((Produse.contains("Bilet virtual") && Produse.length() < 90) || (Produse.contains("Cutia virtual") && Produse.length() < 90)) {
+                    state = "finalizat";
                     ps = connection.prepareStatement
                             ("INSERT INTO produsevirtuale (status, nr, cod_comanda, data_comanda, client, produse, adresa, localitate,cod_postal, tara, telefon, email, observatii, valoare_produse, incasat, state, cost_transport) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 

@@ -1,12 +1,16 @@
 package ro.siit.OrderProcessing;
 
 import ro.siit.OrderDetails.DisplayedOrder;
+import ro.siit.OrderDetails.LineItems;
+import ro.siit.OrderDetails.Order;
 
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class OrderService {
 
@@ -335,16 +339,28 @@ public class OrderService {
                             rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10),
                             rs.getString(11), rs.getString(12), rs.getString(13), rs.getInt(14),
                             rs.getString(15), rs.getString(16), rs.getString(17));
-                }
-                else{
+                } else {
                     List<DisplayedOrder> totalOrders = new OrderService().getTotalRevenue();
-                    for (DisplayedOrder order: totalOrders){
-                        if (order.getCodComanda() == Integer.parseInt(nameOrCode)){
+                    for (DisplayedOrder order : totalOrders) {
+                        if (order.getCodComanda() == Integer.parseInt(nameOrCode)) {
                             return order;
                         }
                     }
                 }
-            } catch (Exception throwable) {
+                List<DisplayedOrder> virtualOrders = new OrderService().displayVirtualOrders();
+                for (DisplayedOrder virtualOrder : virtualOrders) {
+                    if (virtualOrder.getCodComanda() == Integer.parseInt(nameOrCode)) {
+                        return virtualOrder;
+                    }
+                }
+                List<DisplayedOrder> deletedOrders = new OrderService().getDeletedOrders();
+                for (DisplayedOrder deletedOrder : deletedOrders) {
+                    if (deletedOrder.getCodComanda() == Integer.parseInt(nameOrCode)) {
+                        return deletedOrder;
+                    }
+                }
+            }
+            catch (Exception throwable) {
                 throwable.printStackTrace();
             } finally {
                 try {
@@ -372,6 +388,18 @@ public class OrderService {
                         if (order.getClient().contains(nameOrCode)){
                             return order;
                         }
+                    }
+                }
+                List<DisplayedOrder> virtualOrders = new OrderService().displayVirtualOrders();
+                for (DisplayedOrder virtualOrder : virtualOrders) {
+                    if (virtualOrder.getClient().contains(nameOrCode)) {
+                        return virtualOrder;
+                    }
+                }
+                List<DisplayedOrder> deletedOrders = new OrderService().getDeletedOrders();
+                for (DisplayedOrder deletedOrder : deletedOrders) {
+                    if (deletedOrder.getClient().contains(nameOrCode)) {
+                        return deletedOrder;
                     }
                 }
             } catch (Exception throwable) {
@@ -501,6 +529,222 @@ public class OrderService {
         }
         totalRevenueOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
         return totalRevenueOrders;
+    }
+
+    public Map<String, Integer> centralizedResults(Date begin, Date end) throws ParseException {
+        List<Integer> results = new ArrayList<>();
+        List<DisplayedOrder> allOrders = new OrderService().getTotalRevenue();
+        allOrders.addAll(new OrderService().displayVirtualOrders());
+        List<DisplayedOrder> intervalOrders = new ArrayList<>();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        for (DisplayedOrder order: allOrders){
+            Date orderDate = simpleDateFormat.parse(order.getDataComanda());
+            if (orderDate.after(begin) && orderDate.before(end)){
+                intervalOrders.add(order);
+                //****
+                System.out.println(order.getCodComanda());
+            }
+        }
+        intervalOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda));
+
+        int materialeCard = 0;
+        int materialeTB = 0;
+        int materialeGLS = 0;
+        int materialeCash = 0;
+        int materialeTotal;
+
+        int carduriCard = 0;
+        int carduriTB = 0;
+        int carduriGLS = 0;
+        int carduriCash = 0;
+        int carduriTotal;
+
+        int donatieCard = 0;
+        int donatieTB = 0;
+        int donatieGLS = 0;
+        int donatieCash = 0;
+        int donatieTotal;
+
+        int biletVirtualCard = 0;
+        int biletVirtualTB = 0;
+        int biletVirtualGLS = 0;
+        int biletVirtualCash = 0;
+        int biletVirtualTotal;
+
+        int transportCard = 0;
+        int transportTB = 0;
+        int transportGLS = 0;
+        int transportTotal;
+
+        for (DisplayedOrder order: intervalOrders){
+            List<String> items = convertProduseString(order);
+            for (String item: items){
+                System.out.println(item);
+            }
+            if (order.getStatus().contains("Achitat online CARD")){
+                for (String produse: items){
+                    Matcher totalMatcher = Pattern.compile("\\d+ lei").matcher(produse);
+                    totalMatcher.find();
+                    if (produse.contains("Bilet virtual")){
+                        biletVirtualCard+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                    }
+                    else if (produse.contains("Cutia virtual")){
+                        donatieCard+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                    }
+                    else if (produse.contains("Card de membru oficial")){
+                        carduriCard+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                    }
+                    else {
+                        materialeCard+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                    }
+                }
+                transportCard+=Integer.parseInt(order.getValoareLivrare());
+            }
+            else if (order.getStatus().contains("Achitat online TRANSFER BANCAR.")){
+                for (String produse: items){
+                    Matcher totalMatcher = Pattern.compile("\\d+ lei").matcher(produse);
+                    totalMatcher.find();
+                    if (produse.contains("Bilet virtual")){
+                        biletVirtualTB+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                    }
+                    else if (produse.contains("Cutia virtual")){
+                        donatieTB+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                    }
+                    else if (produse.contains("Card de membru oficial")){
+                        carduriTB+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                    }
+                    else {
+                        materialeTB+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                    }
+                }
+                transportTB+=Integer.parseInt(order.getValoareLivrare());
+            }
+            else if (order.getStatus().contains("Plata ramburs. Livrare curier")){
+                for (String produse: items){
+                    Matcher totalMatcher = Pattern.compile("\\d+ lei").matcher(produse);
+                    totalMatcher.find();
+                    if (produse.contains("Bilet virtual")){
+                        biletVirtualGLS+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                    }
+                    else if (produse.contains("Cutia virtual")){
+                        donatieGLS+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                    }
+                    else if (produse.contains("Card de membru oficial")){
+                        carduriGLS+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                    }
+                    else {
+                        materialeGLS+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                    }
+                }
+                transportGLS+=Integer.parseInt(order.getValoareLivrare());
+            }
+            else if (order.getStatus().contains("Plata ramburs. Ridicare personala din magazin.")){
+                for (String produse: items){
+                    Matcher totalMatcher = Pattern.compile("\\d+ lei").matcher(produse);
+                    totalMatcher.find();
+                    if (produse.contains("Bilet virtual")){
+                        biletVirtualCash+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                    }
+                    else if (produse.contains("Cutia virtual")){
+                        donatieCash+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                    }
+                    else if (produse.contains("Card de membru oficial")){
+                        carduriCash+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                    }
+                    else {
+                        materialeCash+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                    }
+                }
+            }
+
+        }
+        materialeTotal = materialeCard + materialeTB + materialeGLS + materialeCash;
+        carduriTotal = carduriCard + carduriTB + carduriGLS + carduriCash;
+        donatieTotal = donatieCard + donatieTB + donatieGLS + donatieCash;
+        biletVirtualTotal = biletVirtualCard + biletVirtualTB + biletVirtualGLS + biletVirtualCash;
+        transportTotal = transportCard + transportTB + transportGLS;
+
+        int subTotalCard = materialeCard + carduriCard + donatieCard + biletVirtualCard;
+        int subTotalTB = materialeTB + carduriTB + donatieTB + biletVirtualTB;
+        int subTotalGLS = materialeGLS + carduriGLS + donatieGLS + biletVirtualGLS;
+        int subTotalCash = materialeCash + carduriCash + donatieCash + biletVirtualCash;
+        int subTotalTotal = subTotalCard + subTotalTB + subTotalGLS + subTotalCash;
+        int TotalTotal = materialeTotal + carduriTotal + donatieTotal + biletVirtualTotal + transportTotal;
+
+        Map<String, Integer> finalResults = new HashMap<>();
+        finalResults.put("materialeCard", materialeCard);
+        finalResults.put("materialeTB", materialeTB);
+        finalResults.put("materialeGLS", materialeGLS);
+        finalResults.put("materialeCash", materialeCash);
+        finalResults.put("materialeTotal", materialeTotal);
+
+        finalResults.put("carduriCard", carduriCard);
+        finalResults.put("carduriTB", carduriTB);
+        finalResults.put("carduriGLS", carduriGLS);
+        finalResults.put("carduriCash", carduriCash);
+        finalResults.put("carduriTotal", carduriTotal);
+
+        finalResults.put("donatieCard", donatieCard);
+        finalResults.put("donatieTB",donatieTB);
+        finalResults.put("donatieGLS", donatieGLS);
+        finalResults.put("donatieCash", donatieCash);
+        finalResults.put("donatieTotal", donatieTotal);
+
+        finalResults.put("biletVirtualCard", biletVirtualCard);
+        finalResults.put("biletVirtualTB", biletVirtualTB);
+        finalResults.put("biletVirtualGLS", biletVirtualGLS);
+        finalResults.put("biletVirtualCash", biletVirtualCash);
+        finalResults.put("biletVirtualTotal", biletVirtualTotal);
+
+        finalResults.put("subTotalCard",subTotalCard);
+        finalResults.put("subTotalTB", subTotalTB);
+        finalResults.put("subTotalGLS", subTotalGLS);
+        finalResults.put("subTotalCash", subTotalCash);
+        finalResults.put("subTotalTotal", subTotalTotal);
+
+        finalResults.put("transportCard",transportCard);
+        finalResults.put("transportTB", transportTB);
+        finalResults.put("transportGLS", transportGLS);
+        finalResults.put("transportTotal", transportTotal);
+
+        finalResults.put("TOTALCARD",subTotalCard + transportCard);
+        finalResults.put("TOTALTB", subTotalTB + transportTB);
+        finalResults.put("TOTALGLS", subTotalGLS + transportGLS);
+        finalResults.put("TOTALCASH", subTotalCash);
+        finalResults.put("TOTALTOTAL", TotalTotal);
+
+
+
+        for (Map.Entry<String, Integer> entry: finalResults.entrySet()){
+            System.out.println(entry.getKey() + " " + entry.getValue());
+        }
+
+        return finalResults;
+    }
+
+    private List<String> convertProduseString(DisplayedOrder displayedOrder){
+
+        String products = displayedOrder.getProduse();
+        List<String> items = new ArrayList<>();
+
+        while (products.length() > 72){
+            String x = products.substring(0,products.indexOf("||"));
+            items.add(x);
+            products=products.substring(products.indexOf("||")+3);
+
+        }
+        items.add(products);
+
+       /* for (int i = 0; i < items.size(); i++) {
+            if ()
+            System.out.println(convertedOrder.getLine_items()[i].getName());
+            convertedOrder.getLine_items()[i].setName(items.get(i).replaceAll("^\\d+ x ([^(]*)\\([^()]+\\)", "$1"));
+            System.out.println(convertedOrder.getLine_items()[i].getName());
+
+        }
+     */
+        return items;
     }
 
 }

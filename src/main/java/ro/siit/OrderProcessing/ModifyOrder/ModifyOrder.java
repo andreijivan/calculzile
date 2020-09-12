@@ -33,7 +33,7 @@ public class ModifyOrder extends HttpServlet {
         int codComandaModify = scanner.nextInt();
         DisplayedOrder oldOrder = orderService.orderExists(String.valueOf(codComandaModify));
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(JsonGenerator.Feature.ESCAPE_NON_ASCII,true);
+        //objectMapper.configure(JsonGenerator.Feature.ESCAPE_NON_ASCII,true);
         DisplayedOrder editedOrder = objectMapper.readValue(test, DisplayedOrder.class);
         System.out.println(editedOrder.getProduse());
         editedOrder.setState(oldOrder.getState());

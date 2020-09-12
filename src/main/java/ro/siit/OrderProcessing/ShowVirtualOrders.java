@@ -19,11 +19,6 @@ public class ShowVirtualOrders extends HttpServlet {
         List<DisplayedOrder> totalOrders = orderService.displayVirtualOrders();
         req.setAttribute("orders",totalOrders);
         req.setAttribute("noOfOrders", totalOrders.size());
-        req.getRequestDispatcher("/jsps/table.jsp").forward(req,resp);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp){
-
+        req.getRequestDispatcher("/jsps/virtualOrdersTable.jsp").forward(req,resp);
     }
 }

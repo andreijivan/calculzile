@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-@WebServlet(urlPatterns = {"/deleteOrder"})
-public class DeleteOrder extends HttpServlet {
+@WebServlet(urlPatterns = {"/deleteVirtualOrder"})
+public class DeleteVirtualOrder extends HttpServlet {
 
     OrderService orderService = new OrderService();
 
@@ -27,7 +27,7 @@ public class DeleteOrder extends HttpServlet {
         String test = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         Scanner scanner = new Scanner(test).useDelimiter("[^0-9]+");
         int codComandaDelete = scanner.nextInt();
-     //   DisplayedOrder finalizedOrder = orderService.orderExists(String.valueOf(codComandaDelete));
+       // DisplayedOrder finalizedOrder = orderService.orderExists(String.valueOf(codComandaDelete));
         Connection connection = null;
 
         try {
@@ -35,20 +35,25 @@ public class DeleteOrder extends HttpServlet {
             connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
 
             PreparedStatement ps = connection.prepareStatement
-                    ("INSERT INTO comenzianulate SELECT * from poliorders WHERE cod_comanda = ?");
+                    ("INSERT INTO comenzianulate SELECT * from produsevirtuale WHERE cod_comanda = ?");
             ps.setInt(1, codComandaDelete);
             ps.executeUpdate();
             ps.close();
+
+            PreparedStatement qs = connection.prepareStatement
+                    ("DELETE FROM produsevirtuale WHERE cod_comanda = ?");
+            qs.setInt(1, codComandaDelete);
+            qs.executeUpdate();
+            qs.close();
 
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }finally {
             try { connection.close(); } catch (Exception e) { /* ignored */ }
         }
-        UpdateOrderTable.deleteFromPoliOrders(codComandaDelete);
-        List<DisplayedOrder> totalOrders = orderService.getAllOrders();
+        List<DisplayedOrder> totalOrders = orderService.displayVirtualOrders();
         req.setAttribute("orders",totalOrders);
-        req.getRequestDispatcher("/jsps/table.jsp").forward(req,resp);
+        req.getRequestDispatcher("/jsps/virtualOrdersTable.jsp").forward(req,resp);
     }
 }
 

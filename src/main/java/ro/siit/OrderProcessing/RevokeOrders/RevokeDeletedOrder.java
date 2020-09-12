@@ -28,38 +28,83 @@ public class RevokeDeletedOrder extends HttpServlet {
         String test = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         Scanner scanner = new Scanner(test).useDelimiter("[^0-9]+");
         int codComandaRevoked = scanner.nextInt();
+        DisplayedOrder searchedOrder = new OrderService().orderExists(String.valueOf(codComandaRevoked));
         Connection connection = null;
-        try {
-            Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
-            PreparedStatement qs = connection.prepareStatement
-                    ("UPDATE comenzianulate SET state = 'pending' WHERE cod_comanda = ?");
-            qs.setInt(1, codComandaRevoked);
-            qs.executeUpdate();
-            qs.close();
-            PreparedStatement ps = connection.prepareStatement
-                    ("INSERT INTO poliorders SELECT * from comenzianulate WHERE cod_comanda = ?");
-            ps.setInt(1, codComandaRevoked);
-            ps.executeUpdate();
-            ps.close();
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }finally {
-            try { connection.close(); } catch (Exception e) { /* ignored */ }
-        }
-        try {
-            Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
-            PreparedStatement ps = connection.prepareStatement
-                    ("DELETE FROM comenzianulate WHERE cod_comanda = ?");
-            ps.setInt(1, codComandaRevoked);
-            ps.executeUpdate();
-            ps.close();
+        if (searchedOrder.getAdresa().equals(" ")){
+            try {
+                Class.forName("org.postgresql.Driver");
+                connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+                PreparedStatement qs = connection.prepareStatement
+                        ("UPDATE comenzianulate SET state = 'finalizat' WHERE cod_comanda = ?");
+                qs.setInt(1, codComandaRevoked);
+                qs.executeUpdate();
+                qs.close();
+                PreparedStatement ps = connection.prepareStatement
+                        ("INSERT INTO produsevirtuale SELECT * from comenzianulate WHERE cod_comanda = ?");
+                ps.setInt(1, codComandaRevoked);
+                ps.executeUpdate();
+                ps.close();
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    connection.close();
+                } catch (Exception e) { /* ignored */ }
+            }
+            try {
+                Class.forName("org.postgresql.Driver");
+                connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+                PreparedStatement ps = connection.prepareStatement
+                        ("DELETE FROM comenzianulate WHERE cod_comanda = ?");
+                ps.setInt(1, codComandaRevoked);
+                ps.executeUpdate();
+                ps.close();
 
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try { connection.close(); } catch (Exception e) { /* ignored */ }
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    connection.close();
+                } catch (Exception e) { /* ignored */ }
+            }
+        }
+        else {
+            try {
+                Class.forName("org.postgresql.Driver");
+                connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+                PreparedStatement qs = connection.prepareStatement
+                        ("UPDATE comenzianulate SET state = 'pending' WHERE cod_comanda = ?");
+                qs.setInt(1, codComandaRevoked);
+                qs.executeUpdate();
+                qs.close();
+                PreparedStatement ps = connection.prepareStatement
+                        ("INSERT INTO poliorders SELECT * from comenzianulate WHERE cod_comanda = ?");
+                ps.setInt(1, codComandaRevoked);
+                ps.executeUpdate();
+                ps.close();
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    connection.close();
+                } catch (Exception e) { /* ignored */ }
+            }
+            try {
+                Class.forName("org.postgresql.Driver");
+                connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+                PreparedStatement ps = connection.prepareStatement
+                        ("DELETE FROM comenzianulate WHERE cod_comanda = ?");
+                ps.setInt(1, codComandaRevoked);
+                ps.executeUpdate();
+                ps.close();
+
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    connection.close();
+                } catch (Exception e) { /* ignored */ }
+            }
         }
         List<DisplayedOrder> totalOrders = orderService.getDeletedOrders();
         req.setAttribute("orders",totalOrders);

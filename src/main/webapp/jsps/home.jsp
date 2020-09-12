@@ -39,7 +39,7 @@
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" href="#" id="xls">XLSX</a>
-                        <a class="dropdown-item" href="#" id="Centralizator incasari lunare">Centralizator</a>
+                        <a class="dropdown-item" href="#" id="centralizator">Centralizator</a>
                     </div>
                 </div>
                 <div class="dropdown">
@@ -136,7 +136,9 @@
     $("#seeArchivedOrders").click(function () {
         getTable("showArchive");
     })
-
+    $("#centralizator").click(function () {
+        getTable("centralizator");
+    })
 
     function getTable(url) {
         $("#tableDiv").html("Loading...");
