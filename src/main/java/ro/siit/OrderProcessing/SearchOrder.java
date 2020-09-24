@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(urlPatterns = {"/searchOrder"})
@@ -19,12 +18,11 @@ public class SearchOrder extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String searchValue = req.getParameter("searchValue");
-        List<DisplayedOrder> foundOrder = new ArrayList<>();
-        DisplayedOrder searchedOrder = orderService.orderExists(String.valueOf(searchValue));
+        List<DisplayedOrder> foundOrders = orderService.orderExists(String.valueOf(searchValue));
 
-        if ( searchedOrder != null){
-            foundOrder.add(searchedOrder);
-            req.setAttribute("orders",foundOrder);
+
+        if ( foundOrders != null){
+            req.setAttribute("orders",foundOrders);
             req.getRequestDispatcher("/jsps/table.jsp").forward(req,resp);
         }
         else {

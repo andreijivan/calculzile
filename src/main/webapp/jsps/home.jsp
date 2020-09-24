@@ -127,7 +127,7 @@
     })
     $("#xls").click(function () {
         $("#tableDiv").table2excel({
-            filename: "SituatieLunara.xlsx"
+            filename: "SituatieLunara.xls"
         });
     });
     $("#incasariTotale").click(function () {

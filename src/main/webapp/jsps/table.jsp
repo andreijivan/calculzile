@@ -38,6 +38,7 @@
                         data-cod_comanda="${order.codComanda}">Finalizat
                 </button>
                 <button class="btn btn-outline-success butonAnulat" type="submit"
+                        <c:if test="${order.state eq 'anulat'}">style="color: white; border-color: rebeccapurple; background-color: rebeccapurple;"</c:if>
                         data-cod_comanda="${order.codComanda}">Anulat
                 </button>
                 <button class="btn btn-outline-success butonPregatit"

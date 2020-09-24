@@ -27,7 +27,6 @@ public class DeleteOrder extends HttpServlet {
         String test = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         Scanner scanner = new Scanner(test).useDelimiter("[^0-9]+");
         int codComandaDelete = scanner.nextInt();
-     //   DisplayedOrder finalizedOrder = orderService.orderExists(String.valueOf(codComandaDelete));
         Connection connection = null;
 
         try {
@@ -39,6 +38,11 @@ public class DeleteOrder extends HttpServlet {
             ps.setInt(1, codComandaDelete);
             ps.executeUpdate();
             ps.close();
+            PreparedStatement qs = connection.prepareStatement
+                    ("UPDATE comenzianulate SET state = 'anulat' WHERE cod_comanda = ?");
+            qs.setInt(1, codComandaDelete);
+            qs.executeUpdate();
+            qs.close();
 
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();

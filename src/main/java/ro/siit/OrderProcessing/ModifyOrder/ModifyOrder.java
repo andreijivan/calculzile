@@ -31,12 +31,18 @@ public class ModifyOrder extends HttpServlet {
          String test = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         Scanner scanner = new Scanner(test).useDelimiter("[^0-9]+");
         int codComandaModify = scanner.nextInt();
-        DisplayedOrder oldOrder = orderService.orderExists(String.valueOf(codComandaModify));
+        List<DisplayedOrder> allOrders = orderService.getAllOrders();
+        DisplayedOrder oldOrder = new DisplayedOrder();
+        for (DisplayedOrder order: allOrders){
+            if (order.getCodComanda() == codComandaModify){
+                oldOrder = order;
+            }
+        }
+
         ObjectMapper objectMapper = new ObjectMapper();
-        //objectMapper.configure(JsonGenerator.Feature.ESCAPE_NON_ASCII,true);
         DisplayedOrder editedOrder = objectMapper.readValue(test, DisplayedOrder.class);
-        System.out.println(editedOrder.getProduse());
         editedOrder.setState(oldOrder.getState());
+
         Connection connection = null;
         try {
             Class.forName("org.postgresql.Driver");

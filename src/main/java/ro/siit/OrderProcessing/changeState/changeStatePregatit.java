@@ -27,7 +27,6 @@ public class changeStatePregatit extends HttpServlet {
         String test = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         Scanner scanner = new Scanner(test).useDelimiter("[^0-9]+");
         int codComandaChangeState = scanner.nextInt();
-        DisplayedOrder finalizedOrder = orderService.orderExists(String.valueOf(codComandaChangeState));
         Connection connection = null;
 
         try {

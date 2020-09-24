@@ -28,7 +28,14 @@ public class RevokeDeletedOrder extends HttpServlet {
         String test = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         Scanner scanner = new Scanner(test).useDelimiter("[^0-9]+");
         int codComandaRevoked = scanner.nextInt();
-        DisplayedOrder searchedOrder = new OrderService().orderExists(String.valueOf(codComandaRevoked));
+        DisplayedOrder searchedOrder = new DisplayedOrder();
+        List<DisplayedOrder> deletedOrders = orderService.getDeletedOrders();
+        for(DisplayedOrder deletedOrder: deletedOrders){
+            if (deletedOrder.getCodComanda() == codComandaRevoked){
+                searchedOrder = deletedOrder;
+            }
+        }
+
         Connection connection = null;
         if (searchedOrder.getAdresa().equals(" ")){
             try {
@@ -44,22 +51,11 @@ public class RevokeDeletedOrder extends HttpServlet {
                 ps.setInt(1, codComandaRevoked);
                 ps.executeUpdate();
                 ps.close();
-            } catch (ClassNotFoundException | SQLException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    connection.close();
-                } catch (Exception e) { /* ignored */ }
-            }
-            try {
-                Class.forName("org.postgresql.Driver");
-                connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
-                PreparedStatement ps = connection.prepareStatement
+                PreparedStatement rs = connection.prepareStatement
                         ("DELETE FROM comenzianulate WHERE cod_comanda = ?");
-                ps.setInt(1, codComandaRevoked);
-                ps.executeUpdate();
-                ps.close();
-
+                rs.setInt(1, codComandaRevoked);
+                rs.executeUpdate();
+                rs.close();
             } catch (ClassNotFoundException | SQLException e) {
                 e.printStackTrace();
             } finally {
@@ -82,22 +78,11 @@ public class RevokeDeletedOrder extends HttpServlet {
                 ps.setInt(1, codComandaRevoked);
                 ps.executeUpdate();
                 ps.close();
-            } catch (ClassNotFoundException | SQLException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    connection.close();
-                } catch (Exception e) { /* ignored */ }
-            }
-            try {
-                Class.forName("org.postgresql.Driver");
-                connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
-                PreparedStatement ps = connection.prepareStatement
+                PreparedStatement rs = connection.prepareStatement
                         ("DELETE FROM comenzianulate WHERE cod_comanda = ?");
-                ps.setInt(1, codComandaRevoked);
-                ps.executeUpdate();
-                ps.close();
-
+                rs.setInt(1, codComandaRevoked);
+                rs.executeUpdate();
+                rs.close();
             } catch (ClassNotFoundException | SQLException e) {
                 e.printStackTrace();
             } finally {

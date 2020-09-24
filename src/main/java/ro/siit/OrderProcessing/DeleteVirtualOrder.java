@@ -39,12 +39,17 @@ public class DeleteVirtualOrder extends HttpServlet {
             ps.setInt(1, codComandaDelete);
             ps.executeUpdate();
             ps.close();
-
             PreparedStatement qs = connection.prepareStatement
-                    ("DELETE FROM produsevirtuale WHERE cod_comanda = ?");
+                    ("UPDATE comenzianulate SET state = 'anulat' WHERE cod_comanda = ?");
             qs.setInt(1, codComandaDelete);
             qs.executeUpdate();
             qs.close();
+
+            PreparedStatement rs = connection.prepareStatement
+                    ("DELETE FROM produsevirtuale WHERE cod_comanda = ?");
+            rs.setInt(1, codComandaDelete);
+            rs.executeUpdate();
+            rs.close();
 
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();

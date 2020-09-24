@@ -25,10 +25,15 @@ public class UpdateOrderTable extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 
         String test = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        //System.out.println(test);
         Scanner scanner = new Scanner(test).useDelimiter("[^0-9]+");
         int codComandaFinalized = scanner.nextInt();
-        DisplayedOrder finalizedOrder = orderService.orderExists(String.valueOf(codComandaFinalized));
+        List<DisplayedOrder> allOrders = orderService.getAllOrders();
+        DisplayedOrder finalizedOrder = new DisplayedOrder();
+        for (DisplayedOrder order: allOrders){
+            if (order.getCodComanda() == codComandaFinalized){
+                finalizedOrder = order;
+            }
+        }
 
         if (finalizedOrder.getStatus().contains("Achitat online CARD")) {
             Connection connection = null;

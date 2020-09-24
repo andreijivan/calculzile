@@ -53,7 +53,7 @@ public class OrderService {
             } catch (Exception e) { /* ignored */ }
         }
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.MONTH,-2);
+        cal.add(Calendar.MONTH, -2);
         Date compareDate = cal.getTime();
         try {
             Class.forName("org.postgresql.Driver");
@@ -71,8 +71,7 @@ public class OrderService {
                     zs.close();
                 }
             }
-        }
-        catch (SQLException | ClassNotFoundException throwable) {
+        } catch (SQLException | ClassNotFoundException throwable) {
             throwable.printStackTrace();
         } finally {
             try {
@@ -96,35 +95,34 @@ public class OrderService {
         } finally {
             try {
                 connection.close();
-            } catch (Exception e) {  /* ignored */  }
+            } catch (Exception e) {  /* ignored */ }
         }
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.MONTH,-2);
+        cal.add(Calendar.MONTH, -2);
         Date compareDate = cal.getTime();
-                try {
-                    Class.forName("org.postgresql.Driver");
-                    connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
-                    for (DisplayedOrder archivedOrder : finalizedBankOrders) {
-                        Date archiveDate = new SimpleDateFormat("yyyy-MM-dd").parse(archivedOrder.getDataComanda());
-                        if (archiveDate.compareTo(compareDate) < 0) {
-                            PreparedStatement qs = connection.prepareStatement("INSERT INTO arhiva SELECT * from comenzifinalizatebanca WHERE cod_comanda = ?");
-                            qs.setInt(1, archivedOrder.getCodComanda());
-                            qs.executeUpdate();
-                            qs.close();
-                            PreparedStatement zs = connection.prepareStatement("DELETE FROM comenzifinalizatebanca WHERE cod_comanda = ?");
-                            zs.setInt(1, archivedOrder.getCodComanda());
-                            zs.executeUpdate();
-                            zs.close();
-                        }
-                    }
+        try {
+            Class.forName("org.postgresql.Driver");
+            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+            for (DisplayedOrder archivedOrder : finalizedBankOrders) {
+                Date archiveDate = new SimpleDateFormat("yyyy-MM-dd").parse(archivedOrder.getDataComanda());
+                if (archiveDate.compareTo(compareDate) < 0) {
+                    PreparedStatement qs = connection.prepareStatement("INSERT INTO arhiva SELECT * from comenzifinalizatebanca WHERE cod_comanda = ?");
+                    qs.setInt(1, archivedOrder.getCodComanda());
+                    qs.executeUpdate();
+                    qs.close();
+                    PreparedStatement zs = connection.prepareStatement("DELETE FROM comenzifinalizatebanca WHERE cod_comanda = ?");
+                    zs.setInt(1, archivedOrder.getCodComanda());
+                    zs.executeUpdate();
+                    zs.close();
                 }
-                    catch (SQLException | ClassNotFoundException throwable) {
-                        throwable.printStackTrace();
-                    } finally {
-                        try {
-                            connection.close();
-                        } catch (Exception e) { /* ignored */ }
-                    }
+            }
+        } catch (SQLException | ClassNotFoundException throwable) {
+            throwable.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (Exception e) { /* ignored */ }
+        }
 
         finalizedBankOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
         return finalizedBankOrders;
@@ -146,7 +144,7 @@ public class OrderService {
             } catch (Exception e) { /* ignored */ }
         }
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.MONTH,-2);
+        cal.add(Calendar.MONTH, -2);
         Date compareDate = cal.getTime();
         try {
             Class.forName("org.postgresql.Driver");
@@ -164,8 +162,7 @@ public class OrderService {
                     zs.close();
                 }
             }
-        }
-        catch (SQLException | ClassNotFoundException | ParseException throwable) {
+        } catch (SQLException | ClassNotFoundException | ParseException throwable) {
             throwable.printStackTrace();
         } finally {
             try {
@@ -185,6 +182,32 @@ public class OrderService {
             displayOrderList(virtualOrders, ps);
             ps.close();
         } catch (Exception throwable) {
+            throwable.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (Exception e) { /* ignored */ }
+        }
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, -2);
+        Date compareDate = cal.getTime();
+        try {
+            Class.forName("org.postgresql.Driver");
+            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+            for (DisplayedOrder archivedVirtualOrder : virtualOrders) {
+                Date archiveDate = new SimpleDateFormat("yyyy-MM-dd").parse(archivedVirtualOrder.getDataComanda());
+                if (archiveDate.compareTo(compareDate) < 0) {
+                    PreparedStatement qs = connection.prepareStatement("INSERT INTO arhiva SELECT * from produsevirtuale WHERE cod_comanda = ?");
+                    qs.setInt(1, archivedVirtualOrder.getCodComanda());
+                    qs.executeUpdate();
+                    qs.close();
+                    PreparedStatement zs = connection.prepareStatement("DELETE FROM produsevirtuale WHERE cod_comanda = ?");
+                    zs.setInt(1, archivedVirtualOrder.getCodComanda());
+                    zs.executeUpdate();
+                    zs.close();
+                }
+            }
+        } catch (SQLException | ClassNotFoundException | ParseException throwable) {
             throwable.printStackTrace();
         } finally {
             try {
@@ -324,93 +347,63 @@ public class OrderService {
         return internationalOrders;
     }
 
-    public DisplayedOrder orderExists(String nameOrCode) {
-        if (nameOrCode.matches("[0-9]+")){
-            try {
-                Class.forName("org.postgresql.Driver");
-                connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
-                PreparedStatement ps = connection.prepareStatement("SELECT * FROM poliorders WHERE cod_comanda = ?");
-                ps.setInt(1, Integer.parseInt(nameOrCode));
-                ResultSet rs = ps.executeQuery();
-                if (rs.next()) {
+    public List<DisplayedOrder> orderExists(String nameOrCode) {
+        OrderService orderService = new OrderService();
+        List<DisplayedOrder> displayedOrders = new ArrayList<>();
+        List<DisplayedOrder> allOrders = orderService.getAllOrders();
 
-                    return new DisplayedOrder(rs.getString(1), rs.getInt(2), rs.getInt(3),
-                            rs.getString(4), rs.getString(5), rs.getString(6),
-                            rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10),
-                            rs.getString(11), rs.getString(12), rs.getString(13), rs.getInt(14),
-                            rs.getString(15), rs.getString(16), rs.getString(17));
-                } else {
-                    List<DisplayedOrder> totalOrders = new OrderService().getTotalRevenue();
-                    for (DisplayedOrder order : totalOrders) {
-                        if (order.getCodComanda() == Integer.parseInt(nameOrCode)) {
-                            return order;
-                        }
-                    }
-                }
-                List<DisplayedOrder> virtualOrders = new OrderService().displayVirtualOrders();
-                for (DisplayedOrder virtualOrder : virtualOrders) {
-                    if (virtualOrder.getCodComanda() == Integer.parseInt(nameOrCode)) {
-                        return virtualOrder;
-                    }
-                }
-                List<DisplayedOrder> deletedOrders = new OrderService().getDeletedOrders();
-                for (DisplayedOrder deletedOrder : deletedOrders) {
-                    if (deletedOrder.getCodComanda() == Integer.parseInt(nameOrCode)) {
-                        return deletedOrder;
-                    }
+        if (nameOrCode.matches("[0-9]+")) {
+
+            for (DisplayedOrder order : allOrders) {
+                if (order.getCodComanda() == Integer.parseInt(nameOrCode)) {
+                    displayedOrders.add(order);
                 }
             }
-            catch (Exception throwable) {
-                throwable.printStackTrace();
-            } finally {
-                try {
-                    connection.close();
-                } catch (Exception e) { /* ignored */ }
+            List<DisplayedOrder> totalOrders = orderService.getTotalRevenue();
+            for (DisplayedOrder finalizedOrder : totalOrders) {
+                if (finalizedOrder.getCodComanda() == Integer.parseInt(nameOrCode)) {
+                    displayedOrders.add(finalizedOrder);
+                }
             }
-        }
-        else{
-            try {
-                Class.forName("org.postgresql.Driver");
-                connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
-                PreparedStatement qs = connection.prepareStatement("SELECT * FROM poliorders WHERE client LIKE ?");
-                qs.setString(1, "%" + nameOrCode + "%");
-                ResultSet rs = qs.executeQuery();
-                if (rs.next()) {
-                    return new DisplayedOrder(rs.getString(1), rs.getInt(2), rs.getInt(3),
-                            rs.getString(4), rs.getString(5), rs.getString(6),
-                            rs.getString(7), rs.getString(8), rs.getString(9), rs.getString(10),
-                            rs.getString(11), rs.getString(12), rs.getString(13), rs.getInt(14),
-                            rs.getString(15), rs.getString(16), rs.getString(17));
+            List<DisplayedOrder> virtualOrders = new OrderService().displayVirtualOrders();
+            for (DisplayedOrder virtualOrder : virtualOrders) {
+                if (virtualOrder.getCodComanda() == Integer.parseInt(nameOrCode)) {
+                    displayedOrders.add(virtualOrder);
                 }
-                else{
-                    List<DisplayedOrder> totalOrders = new OrderService().getTotalRevenue();
-                    for (DisplayedOrder order: totalOrders){
-                        if (order.getClient().contains(nameOrCode)){
-                            return order;
-                        }
-                    }
+            }
+            List<DisplayedOrder> deletedOrders = orderService.getDeletedOrders();
+            for (DisplayedOrder deletedOrder : deletedOrders) {
+                if (deletedOrder.getCodComanda() == Integer.parseInt(nameOrCode)) {
+                    displayedOrders.add(deletedOrder);
                 }
-                List<DisplayedOrder> virtualOrders = new OrderService().displayVirtualOrders();
-                for (DisplayedOrder virtualOrder : virtualOrders) {
-                    if (virtualOrder.getClient().contains(nameOrCode)) {
-                        return virtualOrder;
-                    }
+            }
+
+        } else {
+            for (DisplayedOrder order : allOrders) {
+                if (order.getClient().toLowerCase().contains(nameOrCode.toLowerCase())) {
+                    displayedOrders.add(order);
                 }
-                List<DisplayedOrder> deletedOrders = new OrderService().getDeletedOrders();
-                for (DisplayedOrder deletedOrder : deletedOrders) {
-                    if (deletedOrder.getClient().contains(nameOrCode)) {
-                        return deletedOrder;
-                    }
+            }
+            List<DisplayedOrder> totalOrders = orderService.getTotalRevenue();
+            for (DisplayedOrder finalizedOrder : totalOrders) {
+                if (finalizedOrder.getClient().toLowerCase().contains(nameOrCode.toLowerCase())) {
+                    displayedOrders.add(finalizedOrder);
                 }
-            } catch (Exception throwable) {
-                throwable.printStackTrace();
-            } finally {
-                try {
-                    connection.close();
-                } catch (Exception e) { /* ignored */ }
+            }
+            List<DisplayedOrder> virtualOrders = orderService.displayVirtualOrders();
+            for (DisplayedOrder virtualOrder : virtualOrders) {
+                if (virtualOrder.getClient().toLowerCase().contains(nameOrCode.toLowerCase())) {
+                    displayedOrders.add(virtualOrder);
+                }
+            }
+            List<DisplayedOrder> deletedOrders = orderService.getDeletedOrders();
+            for (DisplayedOrder deletedOrder : deletedOrders) {
+                if (deletedOrder.getClient().toLowerCase().contains(nameOrCode.toLowerCase())) {
+                    displayedOrders.add(deletedOrder);
+                }
             }
         }
-        return null;
+        return displayedOrders;
     }
 
     public List<DisplayedOrder> getDeletedOrders() {
@@ -434,7 +427,7 @@ public class OrderService {
         return deletedOrders;
     }
 
-    public List<DisplayedOrder> getArchive(){
+    public List<DisplayedOrder> getArchive() {
         List<DisplayedOrder> archivedOrders = new ArrayList<>();
 
         try {
@@ -532,18 +525,18 @@ public class OrderService {
     }
 
     public Map<String, Integer> centralizedResults(Date begin, Date end) throws ParseException {
-        List<Integer> results = new ArrayList<>();
+
         List<DisplayedOrder> allOrders = new OrderService().getTotalRevenue();
         allOrders.addAll(new OrderService().displayVirtualOrders());
         List<DisplayedOrder> intervalOrders = new ArrayList<>();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-        for (DisplayedOrder order: allOrders){
+        for (DisplayedOrder order : allOrders) {
             Date orderDate = simpleDateFormat.parse(order.getDataComanda());
-            if (orderDate.after(begin) && orderDate.before(end)){
+            if ((orderDate.after(begin) || orderDate.equals(begin)) && (orderDate.before(end) || orderDate.equals(end))) {
                 intervalOrders.add(order);
                 //****
-                System.out.println(order.getCodComanda());
+                // System.out.println(order.getCodComanda());
             }
         }
         intervalOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda));
@@ -577,87 +570,107 @@ public class OrderService {
         int transportGLS = 0;
         int transportTotal;
 
-        for (DisplayedOrder order: intervalOrders){
+        for (DisplayedOrder order : intervalOrders) {
             List<String> items = convertProduseString(order);
-            for (String item: items){
+            /*for (String item : items) {
                 System.out.println(item);
-            }
-            if (order.getStatus().contains("Achitat online CARD")){
-                for (String produse: items){
-                    Matcher totalMatcher = Pattern.compile("\\d+ lei").matcher(produse);
-                    totalMatcher.find();
-                    if (produse.contains("Bilet virtual")){
-                        biletVirtualCard+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+            }*/
+            for (String produse : items) {
+                Matcher totalMatcher = Pattern.compile("\\d+ lei").matcher(produse);
+                Matcher totalMatcherNoSpace = Pattern.compile("\\d+lei").matcher(produse);
+                if (order.getStatus().contains("Achitat online CARD")) {
+                    if (totalMatcher.find()) {
+                        if (produse.contains("Bilet virtual")) {
+                            biletVirtualCard += Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                        } else if (produse.contains("Cutia virtual")) {
+                            donatieCard += Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                        } else if (produse.contains("Card de membru oficial")) {
+                            carduriCard += Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                        } else {
+                            materialeCard += Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                        }
+                    } else if (totalMatcherNoSpace.find()) {
+                        if (produse.contains("Bilet virtual")) {
+                            biletVirtualCard += Integer.parseInt(String.valueOf(totalMatcherNoSpace.group()).replaceAll("[^0-9]", ""));
+                        } else if (produse.contains("Cutia virtual")) {
+                            donatieCard += Integer.parseInt(String.valueOf(totalMatcherNoSpace.group()).replaceAll("[^0-9]", ""));
+                        } else if (produse.contains("Card de membru oficial")) {
+                            carduriCard += Integer.parseInt(String.valueOf(totalMatcherNoSpace.group()).replaceAll("[^0-9]", ""));
+                        } else {
+                            materialeCard += Integer.parseInt(String.valueOf(totalMatcherNoSpace.group()).replaceAll("[^0-9]", ""));
+                        }
                     }
-                    else if (produse.contains("Cutia virtual")){
-                        donatieCard+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                    transportCard += Integer.parseInt(order.getValoareLivrare());
+                } else if (order.getStatus().contains("Achitat online TRANSFER BANCAR.")) {
+                    if (totalMatcher.find()) {
+                        if (produse.contains("Bilet virtual")) {
+                            biletVirtualTB += Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                        } else if (produse.contains("Cutia virtual")) {
+                            donatieTB += Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                        } else if (produse.contains("Card de membru oficial")) {
+                            carduriTB += Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                        } else {
+                            materialeTB += Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                        }
+                    } else if (totalMatcherNoSpace.find()) {
+                        if (produse.contains("Bilet virtual")) {
+                            biletVirtualTB += Integer.parseInt(String.valueOf(totalMatcherNoSpace.group()).replaceAll("[^0-9]", ""));
+                        } else if (produse.contains("Cutia virtual")) {
+                            donatieTB += Integer.parseInt(String.valueOf(totalMatcherNoSpace.group()).replaceAll("[^0-9]", ""));
+                        } else if (produse.contains("Card de membru oficial")) {
+                            carduriTB += Integer.parseInt(String.valueOf(totalMatcherNoSpace.group()).replaceAll("[^0-9]", ""));
+                        } else {
+                            materialeTB += Integer.parseInt(String.valueOf(totalMatcherNoSpace.group()).replaceAll("[^0-9]", ""));
+                        }
                     }
-                    else if (produse.contains("Card de membru oficial")){
-                        carduriCard+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                    transportTB += Integer.parseInt(order.getValoareLivrare());
+                } else if (order.getStatus().contains("Plata ramburs. Livrare curier")) {
+                    if (totalMatcher.find()) {
+                        if (produse.contains("Bilet virtual")) {
+                            biletVirtualGLS += Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                        } else if (produse.contains("Cutia virtual")) {
+                            donatieGLS += Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                        } else if (produse.contains("Card de membru oficial")) {
+                            carduriGLS += Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                        } else {
+                            materialeGLS += Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                        }
+                    } else if (totalMatcherNoSpace.find()) {
+                        if (produse.contains("Bilet virtual")) {
+                            biletVirtualGLS += Integer.parseInt(String.valueOf(totalMatcherNoSpace.group()).replaceAll("[^0-9]", ""));
+                        } else if (produse.contains("Cutia virtual")) {
+                            donatieGLS += Integer.parseInt(String.valueOf(totalMatcherNoSpace.group()).replaceAll("[^0-9]", ""));
+                        } else if (produse.contains("Card de membru oficial")) {
+                            carduriGLS += Integer.parseInt(String.valueOf(totalMatcherNoSpace.group()).replaceAll("[^0-9]", ""));
+                        } else {
+                            materialeGLS += Integer.parseInt(String.valueOf(totalMatcherNoSpace.group()).replaceAll("[^0-9]", ""));
+                        }
                     }
-                    else {
-                        materialeCard+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                    transportGLS += Integer.parseInt(order.getValoareLivrare());
+                } else if (order.getStatus().contains("Plata ramburs. Ridicare personala din magazin.")) {
+                    if (totalMatcher.find()) {
+                        if (produse.contains("Bilet virtual")) {
+                            biletVirtualCash += Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                        } else if (produse.contains("Cutia virtual")) {
+                            donatieCash += Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                        } else if (produse.contains("Card de membru oficial")) {
+                            carduriCash += Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                        } else {
+                            materialeCash += Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                        }
+                    } else if (totalMatcherNoSpace.find()) {
+                        if (produse.contains("Bilet virtual")) {
+                            biletVirtualCash += Integer.parseInt(String.valueOf(totalMatcherNoSpace.group()).replaceAll("[^0-9]", ""));
+                        } else if (produse.contains("Cutia virtual")) {
+                            donatieCash += Integer.parseInt(String.valueOf(totalMatcherNoSpace.group()).replaceAll("[^0-9]", ""));
+                        } else if (produse.contains("Card de membru oficial")) {
+                            carduriCash += Integer.parseInt(String.valueOf(totalMatcherNoSpace.group()).replaceAll("[^0-9]", ""));
+                        } else {
+                            materialeCash += Integer.parseInt(String.valueOf(totalMatcherNoSpace.group()).replaceAll("[^0-9]", ""));
+                        }
                     }
                 }
-                transportCard+=Integer.parseInt(order.getValoareLivrare());
             }
-            else if (order.getStatus().contains("Achitat online TRANSFER BANCAR.")){
-                for (String produse: items){
-                    Matcher totalMatcher = Pattern.compile("\\d+ lei").matcher(produse);
-                    totalMatcher.find();
-                    if (produse.contains("Bilet virtual")){
-                        biletVirtualTB+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
-                    }
-                    else if (produse.contains("Cutia virtual")){
-                        donatieTB+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
-                    }
-                    else if (produse.contains("Card de membru oficial")){
-                        carduriTB+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
-                    }
-                    else {
-                        materialeTB+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
-                    }
-                }
-                transportTB+=Integer.parseInt(order.getValoareLivrare());
-            }
-            else if (order.getStatus().contains("Plata ramburs. Livrare curier")){
-                for (String produse: items){
-                    Matcher totalMatcher = Pattern.compile("\\d+ lei").matcher(produse);
-                    totalMatcher.find();
-                    if (produse.contains("Bilet virtual")){
-                        biletVirtualGLS+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
-                    }
-                    else if (produse.contains("Cutia virtual")){
-                        donatieGLS+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
-                    }
-                    else if (produse.contains("Card de membru oficial")){
-                        carduriGLS+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
-                    }
-                    else {
-                        materialeGLS+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
-                    }
-                }
-                transportGLS+=Integer.parseInt(order.getValoareLivrare());
-            }
-            else if (order.getStatus().contains("Plata ramburs. Ridicare personala din magazin.")){
-                for (String produse: items){
-                    Matcher totalMatcher = Pattern.compile("\\d+ lei").matcher(produse);
-                    totalMatcher.find();
-                    if (produse.contains("Bilet virtual")){
-                        biletVirtualCash+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
-                    }
-                    else if (produse.contains("Cutia virtual")){
-                        donatieCash+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
-                    }
-                    else if (produse.contains("Card de membru oficial")){
-                        carduriCash+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
-                    }
-                    else {
-                        materialeCash+=Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
-                    }
-                }
-            }
-
         }
         materialeTotal = materialeCard + materialeTB + materialeGLS + materialeCash;
         carduriTotal = carduriCard + carduriTB + carduriGLS + carduriCash;
@@ -686,7 +699,7 @@ public class OrderService {
         finalResults.put("carduriTotal", carduriTotal);
 
         finalResults.put("donatieCard", donatieCard);
-        finalResults.put("donatieTB",donatieTB);
+        finalResults.put("donatieTB", donatieTB);
         finalResults.put("donatieGLS", donatieGLS);
         finalResults.put("donatieCash", donatieCash);
         finalResults.put("donatieTotal", donatieTotal);
@@ -697,53 +710,44 @@ public class OrderService {
         finalResults.put("biletVirtualCash", biletVirtualCash);
         finalResults.put("biletVirtualTotal", biletVirtualTotal);
 
-        finalResults.put("subTotalCard",subTotalCard);
+        finalResults.put("subTotalCard", subTotalCard);
         finalResults.put("subTotalTB", subTotalTB);
         finalResults.put("subTotalGLS", subTotalGLS);
         finalResults.put("subTotalCash", subTotalCash);
         finalResults.put("subTotalTotal", subTotalTotal);
 
-        finalResults.put("transportCard",transportCard);
+        finalResults.put("transportCard", transportCard);
         finalResults.put("transportTB", transportTB);
         finalResults.put("transportGLS", transportGLS);
         finalResults.put("transportTotal", transportTotal);
 
-        finalResults.put("TOTALCARD",subTotalCard + transportCard);
+        finalResults.put("TOTALCARD", subTotalCard + transportCard);
         finalResults.put("TOTALTB", subTotalTB + transportTB);
         finalResults.put("TOTALGLS", subTotalGLS + transportGLS);
         finalResults.put("TOTALCASH", subTotalCash);
         finalResults.put("TOTALTOTAL", TotalTotal);
 
 
-
-        for (Map.Entry<String, Integer> entry: finalResults.entrySet()){
+        for (Map.Entry<String, Integer> entry : finalResults.entrySet()) {
             System.out.println(entry.getKey() + " " + entry.getValue());
         }
 
         return finalResults;
     }
 
-    private List<String> convertProduseString(DisplayedOrder displayedOrder){
+    private List<String> convertProduseString(DisplayedOrder displayedOrder) {
 
         String products = displayedOrder.getProduse();
         List<String> items = new ArrayList<>();
 
-        while (products.length() > 72){
-            String x = products.substring(0,products.indexOf("||"));
+        while (products.length() > 72) {
+            String x = products.substring(0, products.indexOf("||"));
             items.add(x);
-            products=products.substring(products.indexOf("||")+3);
+            products = products.substring(products.indexOf("||") + 3);
 
         }
         items.add(products);
 
-       /* for (int i = 0; i < items.size(); i++) {
-            if ()
-            System.out.println(convertedOrder.getLine_items()[i].getName());
-            convertedOrder.getLine_items()[i].setName(items.get(i).replaceAll("^\\d+ x ([^(]*)\\([^()]+\\)", "$1"));
-            System.out.println(convertedOrder.getLine_items()[i].getName());
-
-        }
-     */
         return items;
     }
 
