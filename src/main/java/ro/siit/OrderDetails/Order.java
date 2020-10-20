@@ -19,6 +19,7 @@ public class Order {
     private LineItems [] line_items;
     private ShippingLine [] shipping_lines;
     private String customer_note;
+    private String currency;
 
 
 }

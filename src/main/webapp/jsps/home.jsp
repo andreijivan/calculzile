@@ -54,12 +54,11 @@
                        <li><a class="dropdown-item" href="#" id="seeInternationalOrders" data-value="Comenzi internationale">Comenzi internationale</a></li>
                     </ul>
                 </div>
-
+                <button class="btn btn-outline-success" type="submit" id="seeArchivedOrders">Arhiva</button>
+                <button class="btn btn-outline-success" type="submit" id="seeOrdersEuro">Comenzi Euro</button>
                 <a href="${pageContext.request.contextPath}/logout">
                     <button class="btn btn-outline-success" type="submit" name="logoutButton">Logout</button>
                 </a>
-                <button class="btn btn-outline-success" type="submit" id="seeArchivedOrders">Arhiva
-                </button>
 
             </ul>
             <div class="form-inline my-2 my-lg-0">
@@ -138,6 +137,9 @@
     })
     $("#centralizator").click(function () {
         getTable("centralizator");
+    })
+    $("#seeOrdersEuro").click(function () {
+        getTable("showOrdersEuro");
     })
 
     function getTable(url) {

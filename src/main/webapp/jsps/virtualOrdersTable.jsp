@@ -81,24 +81,6 @@
 </table>
 
 <script>
-/*    $(".butonFinalizat").click(function () {
-        let codComanda = $(this).data("cod_comanda");
-        $.ajax({
-            type: "POST",
-            url: "https://polishoporders.herokuapp.com/updateOrderTable",
-            contentType: "application/json",
-            data: {
-                "codComanda": codComanda
-            },
-            success: function (data) {
-                console.log(data);
-                $("#tableDiv").html(data);
-            },
-            error: function () {
-                $("#tableDiv").html("A aparut o eroare. Reincercati");
-            }
-        });
-    })*/
     $(".butonAnulat").click(function () {
         let codComanda = $(this).data("cod_comanda");
         $.ajax({
@@ -122,25 +104,4 @@
     $("#noOfOrders").html("${fn:length(orders)}")
 </script>
 
-<%--
-<script>
-    $('#modalEditForm').on('show.bs.modal', function (e) {
-        let opener = e.relatedTarget;
-        $('#modalEditForm').find('[id="statusClient"]').val($(opener).attr('clientStatus'));
-        $('#modalEditForm').find('[id="codComandaClient"]').val($(opener).attr('clientOrderNumber'));
-        $('#modalEditForm').find('[id="dataComandaClient"]').val($(opener).attr('clientOrderDate'));
-        $('#modalEditForm').find('[id="numeClient"]').val($(opener).attr('clientName'));
-        $('#modalEditForm').find('[id="produseClient"]').val($(opener).attr('clientProducts'));
-     /*   console.log($(opener).attr('clientProducts'));*/
-        $('#modalEditForm').find('[id="adresaClient"]').val($(opener).attr('clientAddress'));
-        $('#modalEditForm').find('[id="localitateClient"]').val($(opener).attr('clientCity'));
-        $('#modalEditForm').find('[id="codPostalClient"]').val($(opener).attr('clientPostalCode'));
-        $('#modalEditForm').find('[id="taraClient"]').val($(opener).attr('clientCountry'));
-        $('#modalEditForm').find('[id="telefonClient"]').val($(opener).attr('clientPhone'));
-        $('#modalEditForm').find('[id="emailClient"]').val($(opener).attr('clientEmail'));
-        $('#modalEditForm').find('[id="observatiiClient"]').val($(opener).attr('clientObs'));
-        $('#modalEditForm').find('[id="valoareProduseClient"]').val($(opener).attr('clientProductsValue'));
-        $('#modalEditForm').find('[id="incasatClient"]').val($(opener).attr('clientTotalPaid'));
-        $('#modalEditForm').find('[id="costLivrareClient"]').val($(opener).attr('clientShippingCost'));
-    });
-</script>--%>
+

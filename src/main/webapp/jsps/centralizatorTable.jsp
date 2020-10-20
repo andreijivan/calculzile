@@ -14,8 +14,6 @@
 </form>
 <c:out value="${materialeTotal}"/>
 <div id="resultsTable">
-
-
 <table class="table table-hover">
     <thead>
     <tr>
@@ -85,10 +83,34 @@
 </table>
 </div>
 
+<div id="resultsProducts">
+    <table class="center">
+        <thead>
+        <tr>
+            <th scope="col">Denumire Produs</th>
+            <th scope="col">Cantitate</th>
+            <th scope="col">Total</th>
+        </tr>
+      <%--  <tr>
+            <th scope="col">TOTAL</th>
+        </tr>--%>
+        </thead>
+
+        <tbody>
+        <c:forEach var="soldProductItem" items="${soldProductsList}">
+            <tr>
+                <td><c:out value="${soldProductItem.name}"/></td>
+                <td><c:out value="${soldProductItem.quantity}"/></td>
+                <td><c:out value="${soldProductItem.price}"/></td>
+            </tr>
+        </c:forEach>
+        </tbody>
+
+    </table>
+</div>
+
 <script>
     $("#searchRange").click(function () {
-      /*  console.log($("#beginDate").val());
-        console.log($("#endDate").val());*/
         $.ajax({
             type: "GET",
             url: "https://polishoporders.herokuapp.com/rangeResults",
@@ -101,12 +123,18 @@
                 let index = "</table>"
                 let end = data.indexOf(index)
                 let other = data.substring(first,end+index.length)
+                $("#resultsTable").html(other)
+                data = data.substring(end+index.length);
+                let firstSecondTable = data.indexOf("<table");
+                let indexSecondTable = "</table>"
+                let endSecondTable = data.indexOf(indexSecondTable)
+                let otherSecondTable = data.substring(firstSecondTable,endSecondTable+indexSecondTable.length)
+                $("#resultsProducts").html(otherSecondTable);
 
-                $("#resultsTable").html(data.substring(first,end+index.length))
-                console.log(other);
+                console.log(otherSecondTable);
             },
             error: function () {
-                $("#tableDiv").html("A aparut o eroare. Reincercati");
+                $("#resultsProducts").html("A aparut o eroare. Reincercati");
             }
         });
     })

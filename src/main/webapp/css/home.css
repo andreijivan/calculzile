@@ -3,13 +3,6 @@ table {
     border: 1px solid #000;
     table-layout: auto;
 }
-/*th.Produse {
-    width:20%
-}
-th.Email {
-    width:8%
-}*/
-
 
 th {
     box-shadow: inset 2px -2px #000;

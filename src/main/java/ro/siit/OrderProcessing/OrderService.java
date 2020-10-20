@@ -1,8 +1,7 @@
 package ro.siit.OrderProcessing;
 
 import ro.siit.OrderDetails.DisplayedOrder;
-import ro.siit.OrderDetails.LineItems;
-import ro.siit.OrderDetails.Order;
+import ro.siit.OrderDetails.soldItem;
 
 import java.sql.*;
 import java.text.ParseException;
@@ -35,6 +34,27 @@ public class OrderService {
         }
         orders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
         return orders;
+    }
+
+    public List<DisplayedOrder> getAllOrdersEuro() {
+        List<DisplayedOrder> ordersEuro = new ArrayList<>();
+        try {
+            Class.forName("org.postgresql.Driver");
+            connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM poliorderseuro");
+            ResultSet rs = ps.executeQuery();
+
+            prepareDisplayedOrder(ordersEuro, ps, rs);
+
+        } catch (Exception throwable) {
+            throwable.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (Exception e) { /* ignored */ }
+        }
+        ordersEuro.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
+        return ordersEuro;
     }
 
     public List<DisplayedOrder> displayFinalizedCashOrders() throws ParseException {
@@ -349,61 +369,71 @@ public class OrderService {
 
     public List<DisplayedOrder> orderExists(String nameOrCode) {
         OrderService orderService = new OrderService();
-        List<DisplayedOrder> displayedOrders = new ArrayList<>();
+        List<DisplayedOrder> foundOrders = new ArrayList<>();
         List<DisplayedOrder> allOrders = orderService.getAllOrders();
-
         if (nameOrCode.matches("[0-9]+")) {
 
             for (DisplayedOrder order : allOrders) {
                 if (order.getCodComanda() == Integer.parseInt(nameOrCode)) {
-                    displayedOrders.add(order);
+                    foundOrders.add(order);
                 }
             }
             List<DisplayedOrder> totalOrders = orderService.getTotalRevenue();
             for (DisplayedOrder finalizedOrder : totalOrders) {
                 if (finalizedOrder.getCodComanda() == Integer.parseInt(nameOrCode)) {
-                    displayedOrders.add(finalizedOrder);
+                    foundOrders.add(finalizedOrder);
                 }
             }
             List<DisplayedOrder> virtualOrders = new OrderService().displayVirtualOrders();
             for (DisplayedOrder virtualOrder : virtualOrders) {
                 if (virtualOrder.getCodComanda() == Integer.parseInt(nameOrCode)) {
-                    displayedOrders.add(virtualOrder);
+                    foundOrders.add(virtualOrder);
                 }
             }
             List<DisplayedOrder> deletedOrders = orderService.getDeletedOrders();
             for (DisplayedOrder deletedOrder : deletedOrders) {
                 if (deletedOrder.getCodComanda() == Integer.parseInt(nameOrCode)) {
-                    displayedOrders.add(deletedOrder);
+                    foundOrders.add(deletedOrder);
                 }
+               /* List<DisplayedOrder> euroOrders = orderService.getAllOrdersEuro();
+                for (DisplayedOrder euroOrder : euroOrders) {
+                    if (euroOrder.getCodComanda() == Integer.parseInt(nameOrCode)) {
+                        foundOrders.add(euroOrder);
+                    }
+                }*/
             }
-
         } else {
             for (DisplayedOrder order : allOrders) {
                 if (order.getClient().toLowerCase().contains(nameOrCode.toLowerCase())) {
-                    displayedOrders.add(order);
+                    foundOrders.add(order);
                 }
             }
             List<DisplayedOrder> totalOrders = orderService.getTotalRevenue();
             for (DisplayedOrder finalizedOrder : totalOrders) {
                 if (finalizedOrder.getClient().toLowerCase().contains(nameOrCode.toLowerCase())) {
-                    displayedOrders.add(finalizedOrder);
+                    foundOrders.add(finalizedOrder);
                 }
             }
             List<DisplayedOrder> virtualOrders = orderService.displayVirtualOrders();
             for (DisplayedOrder virtualOrder : virtualOrders) {
                 if (virtualOrder.getClient().toLowerCase().contains(nameOrCode.toLowerCase())) {
-                    displayedOrders.add(virtualOrder);
+                    foundOrders.add(virtualOrder);
                 }
             }
             List<DisplayedOrder> deletedOrders = orderService.getDeletedOrders();
             for (DisplayedOrder deletedOrder : deletedOrders) {
                 if (deletedOrder.getClient().toLowerCase().contains(nameOrCode.toLowerCase())) {
-                    displayedOrders.add(deletedOrder);
+                    foundOrders.add(deletedOrder);
                 }
             }
+           /* List<DisplayedOrder> euroOrders = orderService.getAllOrdersEuro();
+            for (DisplayedOrder euroOrder : deletedOrders) {
+                if (euroOrder.getClient().toLowerCase().contains(nameOrCode.toLowerCase())) {
+                    foundOrders.add(euroOrder);
+                }
+            }*/
         }
-        return displayedOrders;
+        return foundOrders;
     }
 
     public List<DisplayedOrder> getDeletedOrders() {
@@ -449,56 +479,6 @@ public class OrderService {
         return archivedOrders;
     }
 
-    private void prepareDisplayedOrder(List<DisplayedOrder> orders, PreparedStatement ps, ResultSet rs) throws SQLException {
-        while (rs.next()) {
-            String status = rs.getString(1);
-            int nr = rs.getInt(2);
-            int codComanda = rs.getInt(3);
-            String dataComanda = rs.getString(4);
-            String client = rs.getString(5);
-            String produse = rs.getString(6);
-            String adresa = rs.getString(7);
-            String localitate = rs.getString(8);
-            String codPostal = rs.getString(9);
-            String tara = rs.getString(10);
-            String telefon = rs.getString(11);
-            String email = rs.getString(12);
-            String observatii = rs.getString(13);
-            int valoareProduse = rs.getInt(14);
-            String incasat = rs.getString(15);
-            String state = rs.getString(16);
-            String valoareLivrare = rs.getString(17);
-            DisplayedOrder checkOrder = new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat, state, valoareLivrare);
-            orders.add(checkOrder);
-        }
-        ps.close();
-    }
-
-    private void displayOrderList(List<DisplayedOrder> finalizedOrders, PreparedStatement ps) throws SQLException {
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            String status = rs.getString(1);
-            int nr = rs.getInt(2);
-            int codComanda = rs.getInt(3);
-            String dataComanda = rs.getString(4);
-            String client = rs.getString(5);
-            String produse = rs.getString(6);
-            String adresa = rs.getString(7);
-            String localitate = rs.getString(8);
-            String codPostal = rs.getString(9);
-            String tara = rs.getString(10);
-            String telefon = rs.getString(11);
-            String email = rs.getString(12);
-            String observatii = rs.getString(13);
-            int valoareProduse = rs.getInt(14);
-            String incasat = rs.getString(15);
-            String state = rs.getString(16);
-            String valoareLivrare = rs.getString(17);
-
-            finalizedOrders.add(new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat, state, valoareLivrare));
-        }
-    }
-
     public List<DisplayedOrder> getTotalRevenue() {
         List<DisplayedOrder> totalRevenueOrders = new ArrayList<>();
         try {
@@ -526,20 +506,7 @@ public class OrderService {
 
     public Map<String, Integer> centralizedResults(Date begin, Date end) throws ParseException {
 
-        List<DisplayedOrder> allOrders = new OrderService().getTotalRevenue();
-        allOrders.addAll(new OrderService().displayVirtualOrders());
-        List<DisplayedOrder> intervalOrders = new ArrayList<>();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-        for (DisplayedOrder order : allOrders) {
-            Date orderDate = simpleDateFormat.parse(order.getDataComanda());
-            if ((orderDate.after(begin) || orderDate.equals(begin)) && (orderDate.before(end) || orderDate.equals(end))) {
-                intervalOrders.add(order);
-                //****
-                // System.out.println(order.getCodComanda());
-            }
-        }
-        intervalOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda));
+        List<DisplayedOrder> intervalOrders = getIntervalOrders(begin, end);
 
         int materialeCard = 0;
         int materialeTB = 0;
@@ -571,7 +538,7 @@ public class OrderService {
         int transportTotal;
 
         for (DisplayedOrder order : intervalOrders) {
-            List<String> items = convertProduseString(order);
+            List<String> items = convertProductsString(order);
             /*for (String item : items) {
                 System.out.println(item);
             }*/
@@ -727,15 +694,103 @@ public class OrderService {
         finalResults.put("TOTALCASH", subTotalCash);
         finalResults.put("TOTALTOTAL", TotalTotal);
 
-
-        for (Map.Entry<String, Integer> entry : finalResults.entrySet()) {
+       /* for (Map.Entry<String, Integer> entry : finalResults.entrySet()) {
             System.out.println(entry.getKey() + " " + entry.getValue());
-        }
+        }*/
 
         return finalResults;
     }
 
-    private List<String> convertProduseString(DisplayedOrder displayedOrder) {
+    public List<soldItem> soldProducts(Date begin, Date end) throws ParseException {
+
+        List<soldItem> soldProducts = new ArrayList<>();
+        List<DisplayedOrder> intervalOrders = getIntervalOrders(begin, end);
+
+
+        for (DisplayedOrder order : intervalOrders) {
+            List<String> items = convertProductsString(order);
+            for (String products : items) {
+                Matcher matcherQuantity = Pattern.compile("\\d+").matcher(products);
+                Matcher totalMatcher = Pattern.compile("\\d+ lei").matcher(products);
+                Matcher totalMatcherNoSpace = Pattern.compile("\\d+lei").matcher(products);
+
+                if (matcherQuantity.find() && totalMatcher.find()) {
+                    int quantity = Integer.parseInt(matcherQuantity.group());
+                    int price = Integer.parseInt(String.valueOf(totalMatcher.group()).replaceAll("[^0-9]", ""));
+                    String productOnly = products.replaceAll("^\\d+ x ([^(]*)\\([^()]+\\)", "$1");
+                    if (productOnly.endsWith("|| ")) productOnly = productOnly.substring(0, productOnly.length() - 3);
+                    else if (productOnly.endsWith("||"))
+                        productOnly = productOnly.substring(0, productOnly.length() - 2);
+                    soldProducts.add(new soldItem(productOnly, quantity, price));
+                } else if (matcherQuantity.find() && totalMatcherNoSpace.find()) {
+                    int quantity = Integer.parseInt(matcherQuantity.group());
+                    int price = Integer.parseInt(String.valueOf(totalMatcherNoSpace.group()).replaceAll("[^0-9]", ""));
+                    String productOnly = products.replaceAll("^\\d+ x ([^(]*)\\([^()]+\\)", "$1");
+                    if (productOnly.endsWith("|| ")) productOnly = productOnly.substring(0, productOnly.length() - 3);
+                    else if (productOnly.endsWith("||"))
+                        productOnly = productOnly.substring(0, productOnly.length() - 2);
+                    soldProducts.add(new soldItem(productOnly, quantity, price));
+                }
+
+            }
+        }
+        /*for (soldItem soldItem: soldProducts){
+            System.out.println(soldItem.toString());
+        }*/
+        return calculateSingleProductsTotal(soldProducts);
+    }
+
+    private void prepareDisplayedOrder(List<DisplayedOrder> orders, PreparedStatement ps, ResultSet rs) throws SQLException {
+        while (rs.next()) {
+            String status = rs.getString(1);
+            int nr = rs.getInt(2);
+            int codComanda = rs.getInt(3);
+            String dataComanda = rs.getString(4);
+            String client = rs.getString(5);
+            String produse = rs.getString(6);
+            String adresa = rs.getString(7);
+            String localitate = rs.getString(8);
+            String codPostal = rs.getString(9);
+            String tara = rs.getString(10);
+            String telefon = rs.getString(11);
+            String email = rs.getString(12);
+            String observatii = rs.getString(13);
+            int valoareProduse = rs.getInt(14);
+            String incasat = rs.getString(15);
+            String state = rs.getString(16);
+            String valoareLivrare = rs.getString(17);
+            DisplayedOrder checkOrder = new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat, state, valoareLivrare);
+            orders.add(checkOrder);
+        }
+        ps.close();
+    }
+
+    private void displayOrderList(List<DisplayedOrder> finalizedOrders, PreparedStatement ps) throws SQLException {
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            String status = rs.getString(1);
+            int nr = rs.getInt(2);
+            int codComanda = rs.getInt(3);
+            String dataComanda = rs.getString(4);
+            String client = rs.getString(5);
+            String produse = rs.getString(6);
+            String adresa = rs.getString(7);
+            String localitate = rs.getString(8);
+            String codPostal = rs.getString(9);
+            String tara = rs.getString(10);
+            String telefon = rs.getString(11);
+            String email = rs.getString(12);
+            String observatii = rs.getString(13);
+            int valoareProduse = rs.getInt(14);
+            String incasat = rs.getString(15);
+            String state = rs.getString(16);
+            String valoareLivrare = rs.getString(17);
+
+            finalizedOrders.add(new DisplayedOrder(status, nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, telefon, email, observatii, valoareProduse, incasat, state, valoareLivrare));
+        }
+    }
+
+    private List<String> convertProductsString(DisplayedOrder displayedOrder) {
 
         String products = displayedOrder.getProduse();
         List<String> items = new ArrayList<>();
@@ -751,4 +806,50 @@ public class OrderService {
         return items;
     }
 
+    private List<DisplayedOrder> getIntervalOrders(Date begin, Date end) throws ParseException {
+        List<DisplayedOrder> allOrders = new OrderService().getTotalRevenue();
+        allOrders.addAll(new OrderService().displayVirtualOrders());
+        List<DisplayedOrder> intervalOrders = new ArrayList<>();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        for (DisplayedOrder order : allOrders) {
+            Date orderDate = simpleDateFormat.parse(order.getDataComanda());
+            if ((orderDate.after(begin) || orderDate.equals(begin)) && (orderDate.before(end) || orderDate.equals(end))) {
+                intervalOrders.add(order);
+                //****
+                // System.out.println(order.getCodComanda());
+            }
+        }
+        intervalOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda));
+        return intervalOrders;
+    }
+
+    private List<soldItem> calculateSingleProductsTotal(List<soldItem> soldProducts) {
+        List<soldItem> singleProductsTotal = new ArrayList<>();
+
+        Set<String> onlyNamesOfProducts = new TreeSet<>();
+        for (soldItem itemString : soldProducts) {
+            onlyNamesOfProducts.add(itemString.getName());
+        }
+
+        // for (String name: onlyNamesOfProducts) System.out.println(name);
+
+        for (String only : onlyNamesOfProducts) {
+            singleProductsTotal.add(new soldItem(only, 0, 0));
+        }
+
+        for (soldItem soldItem : soldProducts) {
+            for (soldItem only : singleProductsTotal) {
+                if (only.getName().equals(soldItem.getName())) {
+                    only.setPrice(only.getPrice() + soldItem.getPrice());
+                    only.setQuantity(only.getQuantity() + soldItem.getQuantity());
+                }
+
+            }
+        }
+        for (soldItem soldItem : singleProductsTotal)
+            System.out.println(soldItem.getName() + " cant " + soldItem.getQuantity() + " total " + soldItem.getPrice());
+
+        return singleProductsTotal;
+    }
 }
