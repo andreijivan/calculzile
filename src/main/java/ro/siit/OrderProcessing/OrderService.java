@@ -370,6 +370,7 @@ public class OrderService {
     public List<DisplayedOrder> orderExists(String nameOrCode) {
         OrderService orderService = new OrderService();
         List<DisplayedOrder> foundOrders = new ArrayList<>();
+
         List<DisplayedOrder> allOrders = orderService.getAllOrders();
         if (nameOrCode.matches("[0-9]+")) {
 
@@ -378,13 +379,13 @@ public class OrderService {
                     foundOrders.add(order);
                 }
             }
-            List<DisplayedOrder> totalOrders = orderService.getTotalRevenue();
-            for (DisplayedOrder finalizedOrder : totalOrders) {
+            List<DisplayedOrder> totalFinalizedOrders = orderService.getTotalRevenue();
+            for (DisplayedOrder finalizedOrder : totalFinalizedOrders) {
                 if (finalizedOrder.getCodComanda() == Integer.parseInt(nameOrCode)) {
                     foundOrders.add(finalizedOrder);
                 }
             }
-            List<DisplayedOrder> virtualOrders = new OrderService().displayVirtualOrders();
+            List<DisplayedOrder> virtualOrders = orderService.displayVirtualOrders();
             for (DisplayedOrder virtualOrder : virtualOrders) {
                 if (virtualOrder.getCodComanda() == Integer.parseInt(nameOrCode)) {
                     foundOrders.add(virtualOrder);
@@ -408,8 +409,8 @@ public class OrderService {
                     foundOrders.add(order);
                 }
             }
-            List<DisplayedOrder> totalOrders = orderService.getTotalRevenue();
-            for (DisplayedOrder finalizedOrder : totalOrders) {
+            List<DisplayedOrder> totalFinalizedOrders = orderService.getTotalRevenue();
+            for (DisplayedOrder finalizedOrder : totalFinalizedOrders) {
                 if (finalizedOrder.getClient().toLowerCase().contains(nameOrCode.toLowerCase())) {
                     foundOrders.add(finalizedOrder);
                 }
@@ -426,13 +427,14 @@ public class OrderService {
                     foundOrders.add(deletedOrder);
                 }
             }
-           /* List<DisplayedOrder> euroOrders = orderService.getAllOrdersEuro();
+         /*   List<DisplayedOrder> euroOrders = orderService.getAllOrdersEuro();
             for (DisplayedOrder euroOrder : deletedOrders) {
                 if (euroOrder.getClient().toLowerCase().contains(nameOrCode.toLowerCase())) {
                     foundOrders.add(euroOrder);
                 }
             }*/
         }
+        foundOrders.sort(Comparator.comparingInt(DisplayedOrder::getCodComanda).reversed());
         return foundOrders;
     }
 

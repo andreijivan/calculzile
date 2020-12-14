@@ -20,8 +20,7 @@ public class SearchOrder extends HttpServlet {
         String searchValue = req.getParameter("searchValue");
         List<DisplayedOrder> foundOrders = orderService.orderExists(String.valueOf(searchValue));
 
-
-        if ( foundOrders != null){
+        if (!foundOrders.isEmpty()){
             req.setAttribute("orders",foundOrders);
             req.getRequestDispatcher("/jsps/table.jsp").forward(req,resp);
         }

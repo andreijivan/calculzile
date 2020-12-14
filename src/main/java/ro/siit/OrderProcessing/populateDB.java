@@ -1,6 +1,7 @@
 package ro.siit.OrderProcessing;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ro.siit.OrderDetails.DisplayedOrder;
 import ro.siit.OrderDetails.Order;
 
 import javax.servlet.annotation.WebServlet;
@@ -12,6 +13,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -46,25 +48,24 @@ public class populateDB extends HttpServlet {
             String observatii = order.getCustomer_note();
             int valoareProduse = order.getTotal() - order.getShipping_total();
             int valoareLivrare = order.getShipping_total();
-            String status = "";
+            String statusInTable = "";
             String incasat = String.valueOf(valoareProduse);
             String state = "pending";
             String currency = order.getCurrency();
+            String objectMapperStatus = order.getStatus();
 
-            if (order.getPayment_method_title().equals("Plata cu cardul / Card payment") || order.getPayment_method_title().equals("Plata cu cardul")) {
-                status = "Achitat online CARD. De expediat. *Create AWB*";
-                if (order.getShipping_lines().length>0 && order.getShipping_lines()[0].getMethod_title().equals("Ridicare personală de la depozitul magazinului (fără cost de transport)")){
-                    status ="Achitat online CARD. Ridicare personala depozit";
+            if (order.getPayment_method_title().contains("Card payment") || order.getPayment_method_title().contains("Plata cu cardul")) {
+                statusInTable = "Achitat online CARD. De expediat. *Create AWB*";
+                if (order.getShipping_lines().length > 0 && order.getShipping_lines()[0].getMethod_title().contains("Ridicare personală de la depozitul magazinului")) {
+                    statusInTable = "Achitat online CARD. Ridicare personala depozit";
                 }
-            } else if (order.getPayment_method_title().equals("Transfer bancar (ordin de plată) / Direct bank transfer")) {
-                status = "Achitat online TRANSFER BANCAR. De asteptat confirmare banca. De expediat. *Create AWB*";
-            }
-
-            if (order.getPayment_method_title().equals("Plata numerar")) {
-                if (order.getShipping_lines()[0].getMethod_title().equals("Transport prin curier rapid")) {
-                    status = "Plata ramburs. Livrare curier  *Create AWB*";
-                } else if (order.getShipping_lines()[0].getMethod_title().equals("Ridicare personală de la depozitul magazinului (fără cost de transport)")) {
-                    status = "Plata ramburs. Ridicare personala din magazin.";
+            } else if (order.getPayment_method_title().contains("Transfer bancar")) {
+                statusInTable = "Achitat online TRANSFER BANCAR. De asteptat confirmare banca. De expediat. *Create AWB*";
+            } else if (order.getPayment_method_title().contains("Plata numerar")) {
+                if (order.getShipping_lines()[0].getMethod_title().contains("Transport prin curier rapid")) {
+                    statusInTable = "Plata ramburs. Livrare curier  *Create AWB*";
+                } else if (order.getShipping_lines()[0].getMethod_title().contains("Ridicare personală de la depozitul magazinului")) {
+                    statusInTable = "Plata ramburs. Ridicare personala din magazin.";
                 }
             }
 
@@ -72,27 +73,26 @@ public class populateDB extends HttpServlet {
                 Class.forName("org.postgresql.Driver");
                 connection = DriverManager.getConnection(System.getenv("JDBC_DATABASE_URL"));
                 PreparedStatement ps;
-                // daca nu avem cont euro:
-                // solutie noua: daca currency = euro, produse = produse.replaceAll("lei","euro"), pus tot in poliorders/produsevirtuale,
-                // si conversat in lei cand e finalizata comanda, sau direct conversat in lei daca e prod virtual
-                if (currency.equals("RON")){
-                    if ((produse.contains("Bilet virtual") && produse.length() < 90) || (produse.contains("Cutia virtual") && produse.length() < 90)) {
-                        state = "finalizat";
-                        ps = connection.prepareStatement
-                                ("INSERT INTO produsevirtuale (status, nr, cod_comanda, data_comanda, client, produse, adresa, localitate,cod_postal, tara, telefon, email, observatii, valoare_produse, incasat, state, cost_transport) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                List<DisplayedOrder> checkForDuplicate = new OrderService().orderExists(String.valueOf(codComanda));
+                if (!objectMapperStatus.equals("failed") && !objectMapperStatus.equals("cancelled") && !objectMapperStatus.equals("pending") && checkForDuplicate.isEmpty()) {
+                    if (currency.equals("RON")) {
+                        if ((produse.contains("Bilet virtual") && produse.length() < 90) || (produse.contains("Cutia virtual") && produse.length() < 90)) {
+                            state = "finalizat";
+                            ps = connection.prepareStatement
+                                    ("INSERT INTO produsevirtuale (status, nr, cod_comanda, data_comanda, client, produse, adresa, localitate,cod_postal, tara, telefon, email, observatii, valoare_produse, incasat, state, cost_transport) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-                    } else {
-                        ps = connection.prepareStatement
-                                ("INSERT INTO poliorders (status, nr, cod_comanda, data_comanda, client, produse, adresa, localitate,cod_postal, tara, telefon, email, observatii, valoare_produse, incasat, state, cost_transport) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                        } else {
+                            ps = connection.prepareStatement
+                                    ("INSERT INTO poliorders (status, nr, cod_comanda, data_comanda, client, produse, adresa, localitate,cod_postal, tara, telefon, email, observatii, valoare_produse, incasat, state, cost_transport) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
+                        }
+                        insertDB(Nr, codComanda, data, client, produse, adresa, localitate, codPostal, tara, nrTelefon, email, observatii, valoareProduse, valoareLivrare, statusInTable, incasat, state, ps);
+                    } else if (currency.equals("EUR")) {
+                        produse = produse.replaceAll("lei", "euro");
+                        ps = connection.prepareStatement
+                                ("INSERT INTO poliorderseuro (status, nr, cod_comanda, data_comanda, client, produse, adresa, localitate,cod_postal, tara, telefon, email, observatii, valoare_produse, incasat, state, cost_transport) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                        insertDB(Nr, codComanda, data, client, produse, adresa, localitate, codPostal, tara, nrTelefon, email, observatii, valoareProduse, valoareLivrare, statusInTable, incasat, state, ps);
                     }
-                    insertDB(Nr, codComanda, data, client, produse, adresa, localitate, codPostal, tara, nrTelefon, email, observatii, valoareProduse, valoareLivrare, status, incasat, state, ps);
-                }
-                else if(currency.equals("EUR")){
-                    produse = produse.replaceAll("lei","euro");
-                    ps = connection.prepareStatement
-                            ("INSERT INTO poliorderseuro (status, nr, cod_comanda, data_comanda, client, produse, adresa, localitate,cod_postal, tara, telefon, email, observatii, valoare_produse, incasat, state, cost_transport) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                    insertDB(Nr, codComanda, data, client, produse, adresa, localitate, codPostal, tara, nrTelefon, email, observatii, valoareProduse, valoareLivrare, status, incasat, state, ps);
                 }
 
             } catch (SQLException | ClassNotFoundException e) {

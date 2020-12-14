@@ -14,11 +14,11 @@
         <a class="navbar-brand" href="#" id="totalOrders" ><span id="noOfOrders">0</span> comenzi</a>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <button class="btn btn-outline-success" type="submit" id="seeAllOrders">Vezi toate comenzile</button>
+                <button class="btn btn-outline-success" type="submit" id="seeAllOrders">Toate comenzile</button>
                 <div class="dropdown">
                     <button class="btn btn-outline-success dropdown-toggle" type="button" id="dropdownFinalizedButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        Vezi comenzi finalizate<span class="caret"></span>
+                        Comenzi finalizate<span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="#" id="plataCash" data-value="Plata Cash">Plata Cash</a></li>
@@ -27,10 +27,10 @@
                         <li><a class="dropdown-item" href="#" id="incasariTotale" data-value="Incasari Totale">Incasari Totale</a></li>
                     </ul>
                 </div>
-                <button class="btn btn-outline-success" type="submit" id="seeVirtualOrders">Vezi comenzi produse
+                <button class="btn btn-outline-success" type="submit" id="seeVirtualOrders">Comenzi produse
                     virtuale
                 </button>
-                <button class="btn btn-outline-success" type="submit" id="seeDeletedOrders">Vezi comenzi anulate
+                <button class="btn btn-outline-success" type="submit" id="seeDeletedOrders">Comenzi anulate
                 </button>
                 <div class="dropdown">
                     <button class="btn btn-outline-success dropdown-toggle" type="button" id="dropdownExportButton"

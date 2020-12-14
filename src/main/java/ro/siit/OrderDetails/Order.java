@@ -20,6 +20,7 @@ public class Order {
     private ShippingLine [] shipping_lines;
     private String customer_note;
     private String currency;
+    private String status;
 
 
 }
