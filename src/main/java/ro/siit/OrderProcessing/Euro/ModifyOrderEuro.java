@@ -27,11 +27,12 @@ public class ModifyOrderEuro extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 
-         String test = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        Scanner scanner = new Scanner(test).useDelimiter("[^0-9]+");
+        String oldOrderJSONEuro = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        DisplayedOrder oldOrder = new DisplayedOrder();
+
+        Scanner scanner = new Scanner(oldOrderJSONEuro).useDelimiter("[^0-9]+");
         int codComandaModify = scanner.nextInt();
         List<DisplayedOrder> allOrders = orderService.getAllOrdersEuro();
-        DisplayedOrder oldOrder = new DisplayedOrder();
         for (DisplayedOrder order: allOrders){
             if (order.getCodComanda() == codComandaModify){
                 oldOrder = order;
@@ -39,7 +40,7 @@ public class ModifyOrderEuro extends HttpServlet {
         }
 
         ObjectMapper objectMapper = new ObjectMapper();
-        DisplayedOrder editedOrder = objectMapper.readValue(test, DisplayedOrder.class);
+        DisplayedOrder editedOrder = objectMapper.readValue(oldOrderJSONEuro, DisplayedOrder.class);
         editedOrder.setState(oldOrder.getState());
 
         Connection connection = null;
@@ -68,26 +69,7 @@ public class ModifyOrderEuro extends HttpServlet {
             PreparedStatement qs = connection.prepareStatement
                     ("INSERT INTO poliorderseuro (status, nr, cod_comanda, data_comanda, client, produse, adresa, localitate, cod_postal, tara, telefon, email, observatii, valoare_produse, incasat, state, cost_transport) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-            qs.setString(1, editedOrder.getStatus());
-            qs.setInt(2, editedOrder.getCodComanda());
-            qs.setInt(3, editedOrder.getCodComanda());
-            qs.setString(4, editedOrder.getDataComanda());
-            qs.setString(5, editedOrder.getClient());
-            qs.setString(6, editedOrder.getProduse());
-            qs.setString(7, editedOrder.getAdresa());
-            qs.setString(8, editedOrder.getLocalitate());
-            qs.setString(9, editedOrder.getCodPostal());
-            qs.setString(10, editedOrder.getTara());
-            qs.setString(11, editedOrder.getTelefon());
-            qs.setString(12, editedOrder.getEmail());
-            qs.setString(13, editedOrder.getObservatii());
-            qs.setInt(14, editedOrder.getValoareProduse());
-            qs.setString(15, String.valueOf(editedOrder.getValoareProduse()));
-            qs.setString(16, editedOrder.getState());
-            qs.setString(17, editedOrder.getValoareLivrare());
-
-            qs.executeUpdate();
-            qs.close();
+            insertDBEuro(editedOrder, qs);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         } finally {
@@ -101,4 +83,27 @@ public class ModifyOrderEuro extends HttpServlet {
                 req.setAttribute("orders", totalOrders);
                 req.getRequestDispatcher("/jsps/tableEuro.jsp").forward(req, resp);
             }
-        }
+
+    public static void insertDBEuro(DisplayedOrder editedOrder, PreparedStatement qs) throws SQLException {
+        qs.setString(1, editedOrder.getStatus());
+        qs.setInt(2, editedOrder.getCodComanda());
+        qs.setInt(3, editedOrder.getCodComanda());
+        qs.setString(4, editedOrder.getDataComanda());
+        qs.setString(5, editedOrder.getClient());
+        qs.setString(6, editedOrder.getProduse());
+        qs.setString(7, editedOrder.getAdresa());
+        qs.setString(8, editedOrder.getLocalitate());
+        qs.setString(9, editedOrder.getCodPostal());
+        qs.setString(10, editedOrder.getTara());
+        qs.setString(11, editedOrder.getTelefon());
+        qs.setString(12, editedOrder.getEmail());
+        qs.setString(13, editedOrder.getObservatii());
+        qs.setInt(14, editedOrder.getValoareProduse());
+        qs.setString(15, String.valueOf(editedOrder.getValoareProduse()));
+        qs.setString(16, editedOrder.getState());
+        qs.setString(17, editedOrder.getValoareLivrare());
+
+        qs.executeUpdate();
+        qs.close();
+    }
+}

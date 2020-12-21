@@ -854,4 +854,16 @@ public class OrderService {
 
         return singleProductsTotal;
     }
+
+    /*public DisplayedOrder findOrderToModify(String orderJSON){
+        Scanner scanner = new Scanner(orderJSON).useDelimiter("[^0-9]+");
+        int codComandaModify = scanner.nextInt();
+        List<DisplayedOrder> allOrders = getAllOrders();
+        for (DisplayedOrder order: allOrders){
+            if (order.getCodComanda() == codComandaModify){
+                return order;
+            }
+        }
+        return null;
+    }*/
 }

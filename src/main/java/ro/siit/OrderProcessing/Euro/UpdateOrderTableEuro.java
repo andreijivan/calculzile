@@ -25,11 +25,12 @@ public class UpdateOrderTableEuro extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 
-        String test = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        Scanner scanner = new Scanner(test).useDelimiter("[^0-9]+");
+        String finalizedOrderJSONEuro = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        DisplayedOrder finalizedOrder = new DisplayedOrder();
+
+        Scanner scanner = new Scanner(finalizedOrderJSONEuro).useDelimiter("[^0-9]+");
         int codComandaFinalized = scanner.nextInt();
         List<DisplayedOrder> allOrders = orderService.getAllOrdersEuro();
-        DisplayedOrder finalizedOrder = new DisplayedOrder();
         for (DisplayedOrder order: allOrders){
             if (order.getCodComanda() == codComandaFinalized){
                 finalizedOrder = order;
