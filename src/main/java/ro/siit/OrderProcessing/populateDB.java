@@ -26,14 +26,14 @@ public class populateDB extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         if ("POST".equalsIgnoreCase(req.getMethod())) {
-            String test = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+            String jsonOrderString = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
             ObjectMapper objectMapper = new ObjectMapper();
-            Order order = objectMapper.readValue(test, Order.class);
+            Order order = objectMapper.readValue(jsonOrderString, Order.class);
 
             int Nr = order.getId();
             int codComanda = order.getId();
-            String data = order.getDate_created();
+            String dataComanda = order.getDate_created();
             String client = order.getBilling().getFirst_name() + " " + order.getBilling().getLast_name();
             String produse = "";
             for (int i = 0; i < order.getLine_items().length; i++) {
@@ -86,12 +86,12 @@ public class populateDB extends HttpServlet {
                                     ("INSERT INTO poliorders (status, nr, cod_comanda, data_comanda, client, produse, adresa, localitate,cod_postal, tara, telefon, email, observatii, valoare_produse, incasat, state, cost_transport) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
                         }
-                        insertDB(Nr, codComanda, data, client, produse, adresa, localitate, codPostal, tara, nrTelefon, email, observatii, valoareProduse, valoareLivrare, statusInTable, incasat, state, ps);
+                        insertDB(Nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, nrTelefon, email, observatii, valoareProduse, valoareLivrare, statusInTable, incasat, state, ps);
                     } else if (currency.equals("EUR")) {
                         produse = produse.replaceAll("lei", "euro");
                         ps = connection.prepareStatement
                                 ("INSERT INTO poliorderseuro (status, nr, cod_comanda, data_comanda, client, produse, adresa, localitate,cod_postal, tara, telefon, email, observatii, valoare_produse, incasat, state, cost_transport) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                        insertDB(Nr, codComanda, data, client, produse, adresa, localitate, codPostal, tara, nrTelefon, email, observatii, valoareProduse, valoareLivrare, statusInTable, incasat, state, ps);
+                        insertDB(Nr, codComanda, dataComanda, client, produse, adresa, localitate, codPostal, tara, nrTelefon, email, observatii, valoareProduse, valoareLivrare, statusInTable, incasat, state, ps);
                     }
                 }
 

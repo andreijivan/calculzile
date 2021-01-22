@@ -1,7 +1,7 @@
 package ro.siit.OrderProcessing;
 
 import ro.siit.OrderDetails.DisplayedOrder;
-import ro.siit.OrderDetails.soldItem;
+import ro.siit.OrderDetails.SoldItem;
 
 import java.sql.*;
 import java.text.ParseException;
@@ -703,9 +703,9 @@ public class OrderService {
         return finalResults;
     }
 
-    public List<soldItem> soldProducts(Date begin, Date end) throws ParseException {
+    public List<SoldItem> soldProducts(Date begin, Date end) throws ParseException {
 
-        List<soldItem> soldProducts = new ArrayList<>();
+        List<SoldItem> soldProducts = new ArrayList<>();
         List<DisplayedOrder> intervalOrders = getIntervalOrders(begin, end);
 
 
@@ -723,7 +723,7 @@ public class OrderService {
                     if (productOnly.endsWith("|| ")) productOnly = productOnly.substring(0, productOnly.length() - 3);
                     else if (productOnly.endsWith("||"))
                         productOnly = productOnly.substring(0, productOnly.length() - 2);
-                    soldProducts.add(new soldItem(productOnly, quantity, price));
+                    soldProducts.add(new SoldItem(productOnly, quantity, price));
                 } else if (matcherQuantity.find() && totalMatcherNoSpace.find()) {
                     int quantity = Integer.parseInt(matcherQuantity.group());
                     int price = Integer.parseInt(String.valueOf(totalMatcherNoSpace.group()).replaceAll("[^0-9]", ""));
@@ -731,7 +731,7 @@ public class OrderService {
                     if (productOnly.endsWith("|| ")) productOnly = productOnly.substring(0, productOnly.length() - 3);
                     else if (productOnly.endsWith("||"))
                         productOnly = productOnly.substring(0, productOnly.length() - 2);
-                    soldProducts.add(new soldItem(productOnly, quantity, price));
+                    soldProducts.add(new SoldItem(productOnly, quantity, price));
                 }
 
             }
@@ -826,22 +826,22 @@ public class OrderService {
         return intervalOrders;
     }
 
-    private List<soldItem> calculateSingleProductsTotal(List<soldItem> soldProducts) {
-        List<soldItem> singleProductsTotal = new ArrayList<>();
+    private List<SoldItem> calculateSingleProductsTotal(List<SoldItem> soldProducts) {
+        List<SoldItem> singleProductsTotal = new ArrayList<>();
 
         Set<String> onlyNamesOfProducts = new TreeSet<>();
-        for (soldItem itemString : soldProducts) {
+        for (SoldItem itemString : soldProducts) {
             onlyNamesOfProducts.add(itemString.getName());
         }
 
         // for (String name: onlyNamesOfProducts) System.out.println(name);
 
         for (String only : onlyNamesOfProducts) {
-            singleProductsTotal.add(new soldItem(only, 0, 0));
+            singleProductsTotal.add(new SoldItem(only, 0, 0));
         }
 
-        for (soldItem soldItem : soldProducts) {
-            for (soldItem only : singleProductsTotal) {
+        for (SoldItem soldItem : soldProducts) {
+            for (SoldItem only : singleProductsTotal) {
                 if (only.getName().equals(soldItem.getName())) {
                     only.setPrice(only.getPrice() + soldItem.getPrice());
                     only.setQuantity(only.getQuantity() + soldItem.getQuantity());
@@ -849,21 +849,10 @@ public class OrderService {
 
             }
         }
-        for (soldItem soldItem : singleProductsTotal)
+        for (SoldItem soldItem : singleProductsTotal)
             System.out.println(soldItem.getName() + " cant " + soldItem.getQuantity() + " total " + soldItem.getPrice());
 
         return singleProductsTotal;
     }
 
-    /*public DisplayedOrder findOrderToModify(String orderJSON){
-        Scanner scanner = new Scanner(orderJSON).useDelimiter("[^0-9]+");
-        int codComandaModify = scanner.nextInt();
-        List<DisplayedOrder> allOrders = getAllOrders();
-        for (DisplayedOrder order: allOrders){
-            if (order.getCodComanda() == codComandaModify){
-                return order;
-            }
-        }
-        return null;
-    }*/
 }
